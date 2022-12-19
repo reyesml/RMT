@@ -1,5 +1,5 @@
 # RMT
-Relationship Management Tool
+![Build & Test](https://github.com/reyesml/RMT/actions/workflows/build_and_test.yml/badge.svg)
 
 
 The Relationship Management Tool (RMT) is designed to give the powers of CRM's to individuals.
