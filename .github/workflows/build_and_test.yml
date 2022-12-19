@@ -15,7 +15,7 @@ jobs:
         with:
           go-version: 1.18
       - name: Install dependencies
-        run: go get app
+        run: go get .
       - name: Build
         run: go build -v ./...
       - name: Test
