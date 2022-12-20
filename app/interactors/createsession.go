@@ -18,11 +18,14 @@ type CreateSessionResponse struct {
 	Expiration time.Time
 }
 
-type CreateSession struct{}
+type CreateSession struct {
+	UserRepo    repos.UserRepo
+	SessionRepo repos.SessionRepo
+}
 
-func (_ CreateSession) Execute(ctx context.Context, userRepo repos.UserRepo, sessionRepo repos.SessionRepo, req CreateSessionRequest) (CreateSessionResponse, error) {
+func (ia CreateSession) Execute(ctx context.Context, req CreateSessionRequest) (CreateSessionResponse, error) {
 	_ = ctx
-	user, err := userRepo.GetByUsername(req.Username)
+	user, err := ia.UserRepo.GetByUsername(req.Username)
 	if err != nil {
 		return CreateSessionResponse{}, err
 	}
@@ -33,7 +36,7 @@ func (_ CreateSession) Execute(ctx context.Context, userRepo repos.UserRepo, ses
 	if err != nil {
 		return CreateSessionResponse{}, err
 	}
-	if err = sessionRepo.Create(session); err != nil {
+	if err = ia.SessionRepo.Create(session); err != nil {
 		return CreateSessionResponse{}, err
 	}
 	return CreateSessionResponse{

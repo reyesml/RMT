@@ -18,11 +18,13 @@ type CreateUserResponse struct {
 	UUID     uuid.UUID
 }
 
-type CreateUser struct{}
+type CreateUser struct {
+	UserRepo repos.UserRepo
+}
 
-func (_ CreateUser) Execute(ctx context.Context, userrepo repos.UserRepo, req CreateUserRequest) (CreateUserResponse, error) {
+func (ia CreateUser) Execute(ctx context.Context, req CreateUserRequest) (CreateUserResponse, error) {
 	_ = ctx
-	users, err := userrepo.FindByUsername(req.Username)
+	users, err := ia.UserRepo.FindByUsername(req.Username)
 	if err != nil {
 		return CreateUserResponse{}, err
 	}
@@ -35,7 +37,7 @@ func (_ CreateUser) Execute(ctx context.Context, userrepo repos.UserRepo, req Cr
 		return CreateUserResponse{}, err
 	}
 
-	err = userrepo.Create(user)
+	err = ia.UserRepo.Create(user)
 	if err != nil {
 		return CreateUserResponse{}, err
 	}

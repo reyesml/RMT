@@ -32,8 +32,11 @@ func TestCreateSession_Execute(t *testing.T) {
 		Username: "TeSt_UsEr",
 		Password: "password123",
 	}
-	var cs CreateSession
-	resp, err := cs.Execute(context.Background(), userRepo, sessionRepo, req)
+	var cs = CreateSession{
+		UserRepo:    userRepo,
+		SessionRepo: sessionRepo,
+	}
+	resp, err := cs.Execute(context.Background(), req)
 	require.NoError(t, err)
 	require.NotEmpty(t, resp.Token)
 	require.GreaterOrEqual(t, resp.Expiration, time.Now().UTC())

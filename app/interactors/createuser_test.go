@@ -27,8 +27,10 @@ func TestCreateUser_Execute(t *testing.T) {
 		Username: "foobar",
 		Password: "plaintext_password",
 	}
-	var cu CreateUser
-	resp, err := cu.Execute(context.Background(), userRepo, req)
+	var cu = CreateUser{
+		UserRepo: userRepo,
+	}
+	resp, err := cu.Execute(context.Background(), req)
 	require.NoError(t, err)
 	require.Equal(t, req.Username, resp.Username)
 	require.NotEmpty(t, resp.UUID.String())
@@ -47,7 +49,7 @@ func TestCreateUser_Execute(t *testing.T) {
 		Username: strings.ToUpper(req.Username),
 		Password: "plaintext_password2",
 	}
-	resp, err = cu.Execute(context.Background(), userRepo, req2)
+	resp, err = cu.Execute(context.Background(), req2)
 	require.Error(t, err)
 
 	//Try non-collision
@@ -55,6 +57,6 @@ func TestCreateUser_Execute(t *testing.T) {
 		Username: fmt.Sprintf("%v2", req.Username),
 		Password: "plaintext_password2",
 	}
-	resp, err = cu.Execute(context.Background(), userRepo, req3)
+	resp, err = cu.Execute(context.Background(), req3)
 	require.NoError(t, err)
 }
