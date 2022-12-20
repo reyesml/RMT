@@ -7,9 +7,17 @@ import (
 )
 
 type UserRepo interface {
+	// GetByUsername retrieves the user with the supplied username.
+	// Returns an error if the user cannot be found.
 	GetByUsername(uname string) (identity.User, error)
+	// FindByUsername retrieves the list of users whose username matches
+	// the supplied username. An empty list is returned if no users are found.
 	FindByUsername(uname string) ([]identity.User, error)
+	// GetByUUID retrieves the user with the supplied UUID. Returns an
+	// error if the user cannot be found.
 	GetByUUID(uuid uuid.UUID) (identity.User, error)
+	// Create inserts a new user into the database. Returns an error if
+	// the insertion fails.
 	Create(user *identity.User) error
 }
 
@@ -23,37 +31,22 @@ func NewUserRepo(db *gorm.DB) UserRepo {
 	}
 }
 
-// GetByUsername retrieves the user with the supplied username.
-// Returns an error if the user cannot be found.
 func (r userRepo) GetByUsername(uname string) (identity.User, error) {
 	var u identity.User
 	result := r.db.Where("Username = ?", uname).First(&u)
-	if result.Error != nil {
-		return u, result.Error
-	}
-	return u, nil
+	return u, result.Error
 }
 
-// FindByUsername retrieves the list of users whose username matches
-// the supplied username. An empty list is returned if no users are found.
 func (r userRepo) FindByUsername(uname string) ([]identity.User, error) {
 	var u []identity.User
 	result := r.db.Where("Username = ?", uname).Find(&u)
-	if result.Error != nil {
-		return u, result.Error
-	}
-	return u, nil
+	return u, result.Error
 }
 
-// GetByUUID retrieves the user with the supplied UUID. Returns an
-// error if the user cannot be found.
 func (r userRepo) GetByUUID(uuid uuid.UUID) (identity.User, error) {
 	var u identity.User
 	result := r.db.Where("UUID = ?", uuid).First(&u)
-	if result.Error != nil {
-		return u, result.Error
-	}
-	return u, nil
+	return u, result.Error
 }
 
 func (r userRepo) Create(user *identity.User) error {
