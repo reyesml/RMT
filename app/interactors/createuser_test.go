@@ -14,10 +14,11 @@ func TestCreateUser_Execute(t *testing.T) {
 	db, err := database.Connect(testDBId)
 	defer os.Remove(testDBId)
 
+	require.NoError(t, err)
+
 	err = repos.MigrateAll(db)
 	require.NoError(t, err)
 
-	require.NoError(t, err)
 	userRepo := repos.NewUserRepo(db)
 	req := CreateUserRequest{
 		Username: "foobar",

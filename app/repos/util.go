@@ -7,6 +7,7 @@ import (
 
 var models = []interface{}{
 	&identity.User{},
+	&identity.Session{},
 }
 
 func MigrateAll(db *gorm.DB) error {
