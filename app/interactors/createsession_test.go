@@ -2,6 +2,7 @@ package interactors
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"github.com/reyesml/RMT/app/core/database"
 	"github.com/reyesml/RMT/app/core/identity"
 	"github.com/reyesml/RMT/app/repos"
@@ -28,7 +29,7 @@ func TestCreateSession_Execute(t *testing.T) {
 
 	sessionRepo := repos.NewSessionRepo(db)
 	req := CreateSessionRequest{
-		Username: user.Username,
+		Username: "TeSt_UsEr",
 		Password: "password123",
 	}
 	var cs CreateSession
@@ -39,5 +40,6 @@ func TestCreateSession_Execute(t *testing.T) {
 
 	session, err := sessionRepo.GetByToken(resp.Token)
 	require.NoError(t, err)
+	require.NotEqual(t, uuid.UUID{}, session.UUID)
 	require.Equal(t, session.Expiration.UTC(), resp.Expiration.UTC())
 }

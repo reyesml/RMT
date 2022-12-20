@@ -4,6 +4,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/reyesml/RMT/app/core/identity"
 	"gorm.io/gorm"
+	"strings"
 )
 
 type UserRepo interface {
@@ -33,7 +34,7 @@ func NewUserRepo(db *gorm.DB) UserRepo {
 
 func (r userRepo) GetByUsername(uname string) (identity.User, error) {
 	var u identity.User
-	result := r.db.Where("Username = ?", uname).First(&u)
+	result := r.db.Where("lower(Username) = ?", strings.ToLower(uname)).First(&u)
 	return u, result.Error
 }
 
@@ -50,6 +51,7 @@ func (r userRepo) GetByUUID(uuid uuid.UUID) (identity.User, error) {
 }
 
 func (r userRepo) Create(user *identity.User) error {
+	user.UsernameLower = strings.ToLower(user.Username)
 	result := r.db.Create(user)
 	return result.Error
 }

@@ -1,6 +1,7 @@
 package database
 
 import (
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 	"os"
 	"testing"
@@ -21,6 +22,7 @@ func TestBaseModel(t *testing.T) {
 	db.Create(&model)
 	require.Greater(t, model.ID, uint(0))
 	require.Equal(t, 36, len(model.UUID.String()))
+	require.NotEqual(t, uuid.UUID{}, model.UUID)
 	require.GreaterOrEqual(t, model.CreatedAt, startTime)
 	require.GreaterOrEqual(t, model.UpdatedAt, startTime)
 	require.True(t, model.DeletedAt.Time.IsZero())
