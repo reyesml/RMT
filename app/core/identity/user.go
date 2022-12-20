@@ -8,7 +8,7 @@ import (
 
 type User struct {
 	database.BaseModel
-	Username     string
+	Username     string `gorm:"unique"`
 	PasswordHash string
 }
 
@@ -37,7 +37,7 @@ func (u *User) SetPassword(pass string) error {
 	return nil
 }
 
-func (u *User) isPasswordCorrect(input string) bool {
+func (u *User) IsPasswordCorrect(input string) bool {
 	byteHash := []byte(u.PasswordHash)
 	err := bcrypt.CompareHashAndPassword(byteHash, []byte(input))
 	return err == nil

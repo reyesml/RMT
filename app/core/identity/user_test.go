@@ -24,11 +24,11 @@ func TestUser(t *testing.T) {
 
 	db.Where("UUID = ?", u.UUID).First(&u)
 
-	require.True(t, u.isPasswordCorrect(ptpw))
+	require.True(t, u.IsPasswordCorrect(ptpw))
 	oldPwHash := u.PasswordHash
 	err = u.SetPassword(ptpw)
 	require.NoError(t, err)
 	require.NotEqual(t, oldPwHash, u.PasswordHash)
-	require.True(t, u.isPasswordCorrect(ptpw))
-	require.False(t, u.isPasswordCorrect("incorrect_password"))
+	require.True(t, u.IsPasswordCorrect(ptpw))
+	require.False(t, u.IsPasswordCorrect("incorrect_password"))
 }
