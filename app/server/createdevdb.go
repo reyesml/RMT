@@ -2,12 +2,16 @@ package main
 
 import (
 	"fmt"
+	"github.com/reyesml/RMT/app/core/config"
 	"github.com/reyesml/RMT/app/core/database"
 	"github.com/reyesml/RMT/app/repos"
+	"os"
 )
 
 func main() {
-	db, err := database.Connect("dev.db")
+	configFile := os.Args[1]
+	cfg, err := config.LoadConfig(configFile)
+	db, err := database.Connect(cfg.Database.DbId)
 	if err != nil {
 		panic(err)
 	}

@@ -1,18 +1,26 @@
 package main
 
 import (
+	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/reyesml/RMT/app/core/config"
 	"github.com/reyesml/RMT/app/core/database"
 	"github.com/reyesml/RMT/app/interactors"
 	"github.com/reyesml/RMT/app/repos"
 	"github.com/reyesml/RMT/app/server/controllers"
 	"net/http"
+	"os"
 )
 
 func main() {
+	configFile := os.Args[1]
+	cfg, err := config.LoadConfig(configFile)
+	if err != nil {
+		panic(err)
+	}
 	//Setup repositories
-	db, err := database.Connect("dev.db")
+	db, err := database.Connect(cfg.Database.DbId)
 	if err != nil {
 		panic(err)
 	}
@@ -41,5 +49,5 @@ func main() {
 
 	r.Post("/login", authController.Login)
 
-	http.ListenAndServe(":3000", r)
+	http.ListenAndServe(fmt.Sprintf(":%v", cfg.Server.Port), r)
 }
