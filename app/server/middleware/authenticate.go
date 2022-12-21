@@ -3,18 +3,11 @@ package middleware
 import (
 	"context"
 	"fmt"
-	"github.com/google/uuid"
+	"github.com/reyesml/RMT/app/core/identity"
 	"github.com/reyesml/RMT/app/repos"
 	"net/http"
 	"strings"
 )
-
-const RequestSessionKey = "rmt-session"
-
-type RequestSession struct {
-	UserUUID    uuid.UUID
-	SessionUUID uuid.UUID
-}
 
 // Authenticate returns a middleware handler. This handler extracts the auth token
 // from the request, giving precedence to the Authorization header, then the cookie.
@@ -37,7 +30,7 @@ func Authenticate(sessionRepo repos.SessionRepo) func(next http.Handler) http.Ha
 			}
 
 			// add our session to the request context
-			ctx := context.WithValue(r.Context(), RequestSessionKey, RequestSession{
+			ctx := context.WithValue(r.Context(), identity.SessionContextKey, identity.SessionContext{
 				UserUUID:    session.User.UUID,
 				SessionUUID: session.UUID,
 			})
