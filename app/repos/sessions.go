@@ -8,7 +8,7 @@ import (
 
 type SessionRepo interface {
 	Create(session *identity.Session) error
-	GetByToken(token string) (identity.Session, error)
+	GetByTokenWithUser(token string) (identity.Session, error)
 }
 
 type sessionRepo struct {
@@ -24,8 +24,8 @@ func (r sessionRepo) Create(session *identity.Session) error {
 	return result.Error
 }
 
-func (r sessionRepo) GetByToken(token string) (identity.Session, error) {
+func (r sessionRepo) GetByTokenWithUser(token string) (identity.Session, error) {
 	var s identity.Session
-	result := r.db.Where("Token = ? AND Expiration > ?", token, time.Now().UTC()).First(&s)
+	result := r.db.Preload("User").Where("Token = ? AND Expiration > ?", token, time.Now().UTC()).First(&s)
 	return s, result.Error
 }

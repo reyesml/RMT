@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -9,6 +10,7 @@ import (
 	"github.com/reyesml/RMT/app/interactors"
 	"github.com/reyesml/RMT/app/repos"
 	"github.com/reyesml/RMT/app/server/controllers"
+	rmtMiddleware "github.com/reyesml/RMT/app/server/middleware"
 	"net/http"
 	"os"
 )
@@ -43,10 +45,31 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
+	//Authenticated routes
+	r.Group(func(r chi.Router) {
+		r.Use(rmtMiddleware.Authenticate(sessionRepo))
+
+		//This is just a sample route to demonstrate retrieving session info.
+		//TODO: delete this after we have a useful authenticated route.
+		r.Get("/session.info", func(w http.ResponseWriter, r *http.Request) {
+			session, ok := r.Context().Value(rmtMiddleware.RequestSessionKey).(rmtMiddleware.RequestSession)
+			if !ok {
+				w.Write([]byte("Couldn't locate session info :("))
+				return
+			}
+			resp, err := json.Marshal(session)
+			if err != nil {
+				w.Write([]byte(err.Error()))
+				return
+			}
+			w.Write(resp)
+		})
+	})
+
+	//Unauthenticated routes
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Hello, world."))
 	})
-
 	r.Post("/login", authController.Login)
 
 	http.ListenAndServe(fmt.Sprintf(":%v", cfg.Server.Port), r)
