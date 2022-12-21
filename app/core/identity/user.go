@@ -11,6 +11,7 @@ type User struct {
 	Username      string `gorm:"unique"`
 	UsernameLower string `gorm:"unique;not null;check:username_lower <> ''"`
 	PasswordHash  string
+	Admin         bool
 }
 
 func NewUser(uname string, pass string) (*User, error) {
