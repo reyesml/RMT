@@ -31,13 +31,9 @@ func main() {
 	sessionRepo := repos.NewSessionRepo(db)
 
 	//Setup interactors
-	createUser := interactors.CreateUser{UserRepo: userRepo}
+	createUser := interactors.NewCreateUser(userRepo)
 	_ = createUser
-	createSession := interactors.CreateSession{
-		UserRepo:      userRepo,
-		SessionRepo:   sessionRepo,
-		SigningSecret: cfg.Session.SigningSecret,
-	}
+	createSession := interactors.NewCreateSession(userRepo, sessionRepo, cfg.Session.SigningSecret)
 
 	//Setup controllers
 	authController := controllers.NewAuthController(createSession)

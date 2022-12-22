@@ -33,11 +33,7 @@ func TestCreateSession_Execute(t *testing.T) {
 		Username: "TeSt_UsEr",
 		Password: "password123",
 	}
-	var cs = CreateSession{
-		UserRepo:      userRepo,
-		SessionRepo:   sessionRepo,
-		SigningSecret: "secret",
-	}
+	cs := NewCreateSession(userRepo, sessionRepo, "secret")
 	resp, err := cs.Execute(context.Background(), req)
 	require.NoError(t, err)
 	require.NotEmpty(t, resp.Token)
@@ -48,7 +44,7 @@ func TestCreateSession_Execute(t *testing.T) {
 	require.Error(t, err)
 
 	//retrieve using matching secret/valid signature
-	sessionUUID, err := identity.GetSessionUUIDFromJWT(resp.Token, cs.SigningSecret)
+	sessionUUID, err := identity.GetSessionUUIDFromJWT(resp.Token, "secret")
 	require.NoError(t, err)
 	require.NotEqual(t, uuid.Nil, sessionUUID)
 

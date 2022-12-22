@@ -27,9 +27,7 @@ func TestCreateUser_Execute(t *testing.T) {
 		Username: "foobar",
 		Password: "plaintext_password",
 	}
-	var cu = CreateUser{
-		UserRepo: userRepo,
-	}
+	cu := NewCreateUser(userRepo)
 	resp, err := cu.Execute(context.Background(), req)
 	require.NoError(t, err)
 	require.Equal(t, req.Username, resp.Username)

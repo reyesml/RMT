@@ -18,15 +18,27 @@ type CreateSessionResponse struct {
 	Expiration time.Time
 }
 
-type CreateSession struct {
-	UserRepo      repos.UserRepo
-	SessionRepo   repos.SessionRepo
-	SigningSecret string
+type CreateSession interface {
+	Execute(ctx context.Context, req CreateSessionRequest) (CreateSessionResponse, error)
 }
 
-func (ia CreateSession) Execute(ctx context.Context, req CreateSessionRequest) (CreateSessionResponse, error) {
+func NewCreateSession(userRepo repos.UserRepo, sessionRepo repos.SessionRepo, signingSecret string) CreateSession {
+	return createSession{
+		userRepo:      userRepo,
+		sessionRepo:   sessionRepo,
+		signingSecret: signingSecret,
+	}
+}
+
+type createSession struct {
+	userRepo      repos.UserRepo
+	sessionRepo   repos.SessionRepo
+	signingSecret string
+}
+
+func (ia createSession) Execute(ctx context.Context, req CreateSessionRequest) (CreateSessionResponse, error) {
 	_ = ctx
-	user, err := ia.UserRepo.GetByUsername(req.Username)
+	user, err := ia.userRepo.GetByUsername(req.Username)
 	if err != nil {
 		return CreateSessionResponse{}, err
 	}
@@ -34,11 +46,11 @@ func (ia CreateSession) Execute(ctx context.Context, req CreateSessionRequest) (
 		return CreateSessionResponse{}, fmt.Errorf("invalid password")
 	}
 	session := identity.NewSession(user)
-	if err = ia.SessionRepo.Create(session); err != nil {
+	if err = ia.sessionRepo.Create(session); err != nil {
 		return CreateSessionResponse{}, err
 	}
 
-	token, err := session.GenerateJWT(ia.SigningSecret)
+	token, err := session.GenerateJWT(ia.signingSecret)
 	if err != nil {
 		return CreateSessionResponse{}, fmt.Errorf("failed to generate jwt: %v", err)
 	}
