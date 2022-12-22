@@ -11,6 +11,15 @@ type BaseModel struct {
 }
 
 func (base *BaseModel) BeforeCreate(tx *gorm.DB) error {
+	return base.AddUUID()
+}
+
+func (base *BaseModel) AddUUID() error {
+	//Don't overwrite a UUID if one is already provided
+	if base.UUID != uuid.Nil {
+		return nil
+	}
+	//Add the UUID if one doesn't exist
 	uuid, err := uuid.NewRandom()
 	if err != nil {
 		return err

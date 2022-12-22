@@ -34,7 +34,7 @@ func TestCreateUser_Execute(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, req.Username, resp.Username)
 	require.NotEmpty(t, resp.UUID.String())
-	require.NotEqual(t, uuid.UUID{}, resp.UUID)
+	require.NotEqual(t, uuid.Nil, resp.UUID)
 
 	user, err := userRepo.GetByUUID(resp.UUID)
 	require.NoError(t, err)

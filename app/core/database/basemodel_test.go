@@ -22,7 +22,7 @@ func TestBaseModel(t *testing.T) {
 	db.Create(&model)
 	require.Greater(t, model.ID, uint(0))
 	require.Equal(t, 36, len(model.UUID.String()))
-	require.NotEqual(t, uuid.UUID{}, model.UUID)
+	require.NotEqual(t, uuid.Nil, model.UUID)
 	require.GreaterOrEqual(t, model.CreatedAt, startTime)
 	require.GreaterOrEqual(t, model.UpdatedAt, startTime)
 	require.True(t, model.DeletedAt.Time.IsZero())

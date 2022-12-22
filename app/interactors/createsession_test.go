@@ -43,6 +43,6 @@ func TestCreateSession_Execute(t *testing.T) {
 
 	session, err := sessionRepo.GetByTokenWithUser(resp.Token)
 	require.NoError(t, err)
-	require.NotEqual(t, uuid.UUID{}, session.UUID)
+	require.NotEqual(t, uuid.Nil, session.UUID)
 	require.Equal(t, session.Expiration.UTC(), resp.Expiration.UTC())
 }
