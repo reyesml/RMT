@@ -1,9 +1,9 @@
 package identity
 
 import (
-	"crypto/rand"
-	"encoding/hex"
 	"fmt"
+	"github.com/golang-jwt/jwt/v4"
+	"github.com/google/uuid"
 	"github.com/reyesml/RMT/app/core/database"
 	"time"
 )
@@ -14,27 +14,51 @@ type Session struct {
 	database.BaseModel
 	UserId     uint
 	User       User
-	Token      string
 	Expiration time.Time
 }
 
-func NewSession(user User) (*Session, error) {
-	token, err := generateToken()
-	if err != nil {
-		return nil, err
-	}
-	return &Session{
+func NewSession(user User) *Session {
+	session := &Session{
 		UserId:     user.ID,
 		User:       user,
-		Token:      token,
 		Expiration: time.Now().UTC().Add(sessionDuration),
-	}, nil
+	}
+	return session
 }
 
-func generateToken() (string, error) {
-	b := make([]byte, 32)
-	if _, err := rand.Read(b); err != nil {
-		return "", fmt.Errorf("failed to generate session token: %v", err)
+func (s *Session) GenerateJWT(signingSecret string) (string, error) {
+	if s.UUID == uuid.Nil {
+		return "", fmt.Errorf("session must have uuid set before token generation")
 	}
-	return hex.EncodeToString(b), nil
+	if s.Expiration.IsZero() {
+		return "", fmt.Errorf("session must have an expiration specified")
+	}
+	claims := jwt.RegisteredClaims{
+		ExpiresAt: jwt.NewNumericDate(s.Expiration),
+		Issuer:    "rmt",
+		ID:        s.UUID.String(),
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte(signingSecret))
+}
+
+func GetSessionUUIDFromJWT(tokenstr string, signingSecret string) (uuid.UUID, error) {
+	token, err := jwt.ParseWithClaims(tokenstr, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(signingSecret), nil
+	})
+
+	if err != nil {
+		return uuid.Nil, err
+	} else if !token.Valid {
+		return uuid.Nil, fmt.Errorf("very bad token")
+	}
+
+	claims, ok := token.Claims.(*jwt.RegisteredClaims)
+	if !ok {
+		return uuid.Nil, fmt.Errorf("could not read claims")
+	}
+	return uuid.Parse(claims.ID)
 }

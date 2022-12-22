@@ -13,6 +13,9 @@ type Config struct {
 	Server struct {
 		Port uint `yaml:"port"`
 	} `yaml:"server"`
+	Session struct {
+		SigningSecret string `yaml:"signing_secret"`
+	} `yaml:"session"`
 }
 
 func LoadConfig(filename string) (Config, error) {

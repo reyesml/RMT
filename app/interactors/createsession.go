@@ -19,8 +19,9 @@ type CreateSessionResponse struct {
 }
 
 type CreateSession struct {
-	UserRepo    repos.UserRepo
-	SessionRepo repos.SessionRepo
+	UserRepo      repos.UserRepo
+	SessionRepo   repos.SessionRepo
+	SigningSecret string
 }
 
 func (ia CreateSession) Execute(ctx context.Context, req CreateSessionRequest) (CreateSessionResponse, error) {
@@ -32,15 +33,18 @@ func (ia CreateSession) Execute(ctx context.Context, req CreateSessionRequest) (
 	if !user.IsPasswordCorrect(req.Password) {
 		return CreateSessionResponse{}, fmt.Errorf("invalid password")
 	}
-	session, err := identity.NewSession(user)
-	if err != nil {
-		return CreateSessionResponse{}, err
-	}
+	session := identity.NewSession(user)
 	if err = ia.SessionRepo.Create(session); err != nil {
 		return CreateSessionResponse{}, err
 	}
+
+	token, err := session.GenerateJWT(ia.SigningSecret)
+	if err != nil {
+		return CreateSessionResponse{}, fmt.Errorf("failed to generate jwt: %v", err)
+	}
+
 	return CreateSessionResponse{
-		Token:      session.Token,
+		Token:      token,
 		Expiration: session.Expiration,
 	}, nil
 }

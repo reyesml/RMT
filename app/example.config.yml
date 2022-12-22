@@ -3,3 +3,6 @@ server:
 
 database:
   dbId: "dev.db"
+
+session:
+  signing_secret: "your-secret-here"

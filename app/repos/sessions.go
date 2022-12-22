@@ -1,6 +1,7 @@
 package repos
 
 import (
+	"github.com/google/uuid"
 	"github.com/reyesml/RMT/app/core/identity"
 	"gorm.io/gorm"
 	"time"
@@ -8,7 +9,7 @@ import (
 
 type SessionRepo interface {
 	Create(session *identity.Session) error
-	GetByTokenWithUser(token string) (identity.Session, error)
+	GetByUUIDWithUser(token uuid.UUID) (identity.Session, error)
 }
 
 type sessionRepo struct {
@@ -24,8 +25,8 @@ func (r sessionRepo) Create(session *identity.Session) error {
 	return result.Error
 }
 
-func (r sessionRepo) GetByTokenWithUser(token string) (identity.Session, error) {
+func (r sessionRepo) GetByUUIDWithUser(uuid uuid.UUID) (identity.Session, error) {
 	var s identity.Session
-	result := r.db.Preload("User").Where("Token = ? AND Expiration > ?", token, time.Now().UTC()).First(&s)
+	result := r.db.Preload("User").Where("UUID = ? AND Expiration > ?", uuid, time.Now().UTC()).First(&s)
 	return s, result.Error
 }

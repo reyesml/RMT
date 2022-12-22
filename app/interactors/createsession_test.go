@@ -26,6 +26,7 @@ func TestCreateSession_Execute(t *testing.T) {
 	user, err := identity.NewUser("test_user", "password123")
 	require.NoError(t, err)
 	require.NoError(t, userRepo.Create(user))
+	require.NotEqual(t, uuid.Nil, user.UUID)
 
 	sessionRepo := repos.NewSessionRepo(db)
 	req := CreateSessionRequest{
@@ -33,16 +34,26 @@ func TestCreateSession_Execute(t *testing.T) {
 		Password: "password123",
 	}
 	var cs = CreateSession{
-		UserRepo:    userRepo,
-		SessionRepo: sessionRepo,
+		UserRepo:      userRepo,
+		SessionRepo:   sessionRepo,
+		SigningSecret: "secret",
 	}
 	resp, err := cs.Execute(context.Background(), req)
 	require.NoError(t, err)
 	require.NotEmpty(t, resp.Token)
 	require.GreaterOrEqual(t, resp.Expiration, time.Now().UTC())
 
-	session, err := sessionRepo.GetByTokenWithUser(resp.Token)
+	//simulate a mismatch on signatures
+	_, err = identity.GetSessionUUIDFromJWT(resp.Token, "wrong-secret")
+	require.Error(t, err)
+
+	//retrieve using matching secret/valid signature
+	sessionUUID, err := identity.GetSessionUUIDFromJWT(resp.Token, cs.SigningSecret)
 	require.NoError(t, err)
-	require.NotEqual(t, uuid.Nil, session.UUID)
+	require.NotEqual(t, uuid.Nil, sessionUUID)
+
+	session, err := sessionRepo.GetByUUIDWithUser(sessionUUID)
+	require.NoError(t, err)
+	require.Equal(t, user.UUID, session.User.UUID)
 	require.Equal(t, session.Expiration.UTC(), resp.Expiration.UTC())
 }

@@ -34,8 +34,9 @@ func main() {
 	createUser := interactors.CreateUser{UserRepo: userRepo}
 	_ = createUser
 	createSession := interactors.CreateSession{
-		UserRepo:    userRepo,
-		SessionRepo: sessionRepo,
+		UserRepo:      userRepo,
+		SessionRepo:   sessionRepo,
+		SigningSecret: cfg.Session.SigningSecret,
 	}
 
 	//Setup controllers
@@ -48,7 +49,7 @@ func main() {
 
 	//Authenticated routes
 	r.Group(func(r chi.Router) {
-		r.Use(rmtMiddleware.Authenticate(sessionRepo))
+		r.Use(rmtMiddleware.Authenticate(sessionRepo, cfg.Session.SigningSecret))
 
 		//This is just a sample route to demonstrate retrieving session info.
 		//TODO: delete this after we have a useful authenticated route.

@@ -13,7 +13,7 @@ import (
 // from the request, giving precedence to the Authorization header, then the cookie.
 // If the token is valid, the user id and session id's are added to the request
 // context. If the token is invalid, a 401 unauthorized is returned to the client.
-func Authenticate(sessionRepo repos.SessionRepo) func(next http.Handler) http.Handler {
+func Authenticate(sessionRepo repos.SessionRepo, signingSecret string) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			token, err := getAuthToken(r)
@@ -22,8 +22,15 @@ func Authenticate(sessionRepo repos.SessionRepo) func(next http.Handler) http.Ha
 				return
 			}
 
+			sessionUUID, err := identity.GetSessionUUIDFromJWT(token, signingSecret)
+			if err != nil {
+				fmt.Printf("err: %v", err)
+				http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+				return
+			}
+
 			// query db for matching token
-			session, err := sessionRepo.GetByTokenWithUser(token)
+			session, err := sessionRepo.GetByUUIDWithUser(sessionUUID)
 			if err != nil {
 				http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 				return
