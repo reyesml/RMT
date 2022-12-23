@@ -1,4 +1,4 @@
-package identity
+package models
 
 import (
 	"fmt"
@@ -61,4 +61,11 @@ func GetSessionUUIDFromJWT(tokenstr string, signingSecret string) (uuid.UUID, er
 		return uuid.Nil, fmt.Errorf("could not read claims")
 	}
 	return uuid.Parse(claims.ID)
+}
+
+const SessionContextKey = "rmt-session"
+
+type SessionContext struct {
+	UserUUID    uuid.UUID
+	SessionUUID uuid.UUID
 }

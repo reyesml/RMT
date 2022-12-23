@@ -1,13 +1,13 @@
 package utils
 
 import (
-	"github.com/reyesml/RMT/app/core/identity"
+	models2 "github.com/reyesml/RMT/app/core/models"
 	"gorm.io/gorm"
 )
 
 var models = []interface{}{
-	&identity.User{},
-	&identity.Session{},
+	&models2.User{},
+	&models2.Session{},
 }
 
 // MigrateAllModels runs all pending database

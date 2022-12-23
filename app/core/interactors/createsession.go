@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/reyesml/RMT/app/core/identity"
+	"github.com/reyesml/RMT/app/core/models"
 	"github.com/reyesml/RMT/app/core/repos"
 	"time"
 )
@@ -48,7 +48,7 @@ func (ia createSession) Execute(ctx context.Context, req CreateSessionRequest) (
 	if !user.IsPasswordCorrect(req.Password) {
 		return CreateSessionResponse{}, BadCredErr
 	}
-	session := identity.NewSession(user)
+	session := models.NewSession(user)
 	if err = ia.sessionRepo.Create(session); err != nil {
 		return CreateSessionResponse{}, err
 	}

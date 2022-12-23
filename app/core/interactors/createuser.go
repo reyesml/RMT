@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/google/uuid"
-	"github.com/reyesml/RMT/app/core/identity"
+	"github.com/reyesml/RMT/app/core/models"
 	"github.com/reyesml/RMT/app/core/repos"
 )
 
@@ -40,7 +40,7 @@ func (ia createUser) Execute(ctx context.Context, req CreateUserRequest) (Create
 		return CreateUserResponse{}, fmt.Errorf("username already exists: %v", req.Username)
 	}
 
-	user, err := identity.NewUser(req.Username, req.Password)
+	user, err := models.NewUser(req.Username, req.Password)
 	if err != nil {
 		return CreateUserResponse{}, err
 	}

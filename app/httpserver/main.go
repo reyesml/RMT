@@ -7,8 +7,8 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/reyesml/RMT/app/core/config"
 	"github.com/reyesml/RMT/app/core/database"
-	"github.com/reyesml/RMT/app/core/identity"
 	"github.com/reyesml/RMT/app/core/interactors"
+	"github.com/reyesml/RMT/app/core/models"
 	"github.com/reyesml/RMT/app/core/repos"
 	"github.com/reyesml/RMT/app/httpserver/controllers"
 	rmtMiddleware "github.com/reyesml/RMT/app/httpserver/middleware"
@@ -50,7 +50,7 @@ func main() {
 		//This is just a sample route to demonstrate retrieving session info.
 		//TODO: delete this after we have a useful authenticated route.
 		r.Get("/session.info", func(w http.ResponseWriter, r *http.Request) {
-			session, ok := r.Context().Value(identity.SessionContextKey).(identity.SessionContext)
+			session, ok := r.Context().Value(models.SessionContextKey).(models.SessionContext)
 			if !ok {
 				w.Write([]byte("Couldn't locate session info :("))
 				return

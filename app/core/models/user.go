@@ -1,4 +1,4 @@
-package identity
+package models
 
 import (
 	"fmt"

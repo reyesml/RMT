@@ -3,7 +3,7 @@ package middleware
 import (
 	"context"
 	"fmt"
-	"github.com/reyesml/RMT/app/core/identity"
+	"github.com/reyesml/RMT/app/core/models"
 	"github.com/reyesml/RMT/app/core/repos"
 	"net/http"
 	"strings"
@@ -22,7 +22,7 @@ func Authenticate(sessionRepo repos.SessionRepo, signingSecret string) func(next
 				return
 			}
 
-			sessionUUID, err := identity.GetSessionUUIDFromJWT(token, signingSecret)
+			sessionUUID, err := models.GetSessionUUIDFromJWT(token, signingSecret)
 			if err != nil {
 				fmt.Printf("err: %v", err)
 				http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
@@ -37,7 +37,7 @@ func Authenticate(sessionRepo repos.SessionRepo, signingSecret string) func(next
 			}
 
 			// add our session to the request context
-			ctx := context.WithValue(r.Context(), identity.SessionContextKey, identity.SessionContext{
+			ctx := context.WithValue(r.Context(), models.SessionContextKey, models.SessionContext{
 				UserUUID:    session.User.UUID,
 				SessionUUID: session.UUID,
 			})

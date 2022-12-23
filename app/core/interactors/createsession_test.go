@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/google/uuid"
 	"github.com/reyesml/RMT/app/core/database"
-	"github.com/reyesml/RMT/app/core/identity"
+	"github.com/reyesml/RMT/app/core/models"
 	"github.com/reyesml/RMT/app/core/repos"
 	"github.com/reyesml/RMT/app/core/utils"
 	"github.com/stretchr/testify/require"
@@ -24,7 +24,7 @@ func TestCreateSession_Execute(t *testing.T) {
 	require.NoError(t, err)
 
 	userRepo := repos.NewUserRepo(db)
-	user, err := identity.NewUser("test_user", "password123")
+	user, err := models.NewUser("test_user", "password123")
 	require.NoError(t, err)
 	require.NoError(t, userRepo.Create(user))
 	require.NotEqual(t, uuid.Nil, user.UUID)
@@ -41,11 +41,11 @@ func TestCreateSession_Execute(t *testing.T) {
 	require.GreaterOrEqual(t, resp.Expiration, time.Now().UTC())
 
 	//simulate a mismatch on signatures
-	_, err = identity.GetSessionUUIDFromJWT(resp.Token, "wrong-secret")
+	_, err = models.GetSessionUUIDFromJWT(resp.Token, "wrong-secret")
 	require.Error(t, err)
 
 	//retrieve using matching secret/valid signature
-	sessionUUID, err := identity.GetSessionUUIDFromJWT(resp.Token, "secret")
+	sessionUUID, err := models.GetSessionUUIDFromJWT(resp.Token, "secret")
 	require.NoError(t, err)
 	require.NotEqual(t, uuid.Nil, sessionUUID)
 
