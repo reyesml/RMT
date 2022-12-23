@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/go-chi/render"
 	"github.com/reyesml/RMT/app/interactors"
 	"net/http"
@@ -47,10 +48,13 @@ func (c authController) Login(w http.ResponseWriter, r *http.Request) {
 		Username: loginReq.Username,
 		Password: loginReq.Password,
 	})
-	// TODO: create custom errors to distinguish different failure reasons
-	if err != nil {
+	if errors.Is(err, interactors.BadCredErr) {
+		w.WriteHeader(http.StatusUnauthorized)
+		render.JSON(w, r, LoginResponse{Error: "invalid login"})
+		return
+	} else if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		render.JSON(w, r, LoginResponse{Error: "failed to create session"})
+		render.JSON(w, r, LoginResponse{Error: "unknown"})
 		return
 	}
 

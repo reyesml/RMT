@@ -2,6 +2,7 @@ package interactors
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/reyesml/RMT/app/core/identity"
 	"github.com/reyesml/RMT/app/repos"
@@ -17,6 +18,8 @@ type CreateSessionResponse struct {
 	Token      string
 	Expiration time.Time
 }
+
+var BadCredErr = errors.New("invalid credentials")
 
 type CreateSession interface {
 	Execute(ctx context.Context, req CreateSessionRequest) (CreateSessionResponse, error)
@@ -43,7 +46,7 @@ func (ia createSession) Execute(ctx context.Context, req CreateSessionRequest) (
 		return CreateSessionResponse{}, err
 	}
 	if !user.IsPasswordCorrect(req.Password) {
-		return CreateSessionResponse{}, fmt.Errorf("invalid password")
+		return CreateSessionResponse{}, BadCredErr
 	}
 	session := identity.NewSession(user)
 	if err = ia.sessionRepo.Create(session); err != nil {
