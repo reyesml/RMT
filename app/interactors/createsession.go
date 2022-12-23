@@ -25,7 +25,7 @@ type CreateSession interface {
 	Execute(ctx context.Context, req CreateSessionRequest) (CreateSessionResponse, error)
 }
 
-func NewCreateSession(userRepo repos.UserRepo, sessionRepo repos.SessionRepo, signingSecret string) CreateSession {
+func NewCreateSession(userRepo repos.UserRepo, sessionRepo repos.SessionRepo, signingSecret string) createSession {
 	return createSession{
 		userRepo:      userRepo,
 		sessionRepo:   sessionRepo,

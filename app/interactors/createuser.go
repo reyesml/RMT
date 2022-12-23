@@ -22,7 +22,7 @@ type CreateUser interface {
 	Execute(ctx context.Context, req CreateUserRequest) (CreateUserResponse, error)
 }
 
-func NewCreateUser(userRepo repos.UserRepo) CreateUser {
+func NewCreateUser(userRepo repos.UserRepo) createUser {
 	return createUser{userRepo: userRepo}
 }
 

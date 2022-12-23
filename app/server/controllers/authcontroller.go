@@ -25,7 +25,7 @@ type LoginResponse struct {
 	Expiration time.Time `json:"expiration"`
 }
 
-func NewAuthController(createSession interactors.CreateSession) AuthController {
+func NewAuthController(createSession interactors.CreateSession) authController {
 	return authController{
 		createSession: createSession,
 	}
