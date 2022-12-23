@@ -33,7 +33,7 @@ func (u *User) SetPassword(pass string) error {
 	}
 	pwHash, err := hashAndSalt(pass)
 	if err != nil {
-		return fmt.Errorf("failed to hash password: %v", err)
+		return fmt.Errorf("failed to hash password: %w", err)
 	}
 	u.PasswordHash = pwHash
 	return nil

@@ -52,7 +52,7 @@ func (ia createSession) Execute(ctx context.Context, req CreateSessionRequest) (
 
 	token, err := session.GenerateJWT(ia.signingSecret)
 	if err != nil {
-		return CreateSessionResponse{}, fmt.Errorf("failed to generate jwt: %v", err)
+		return CreateSessionResponse{}, fmt.Errorf("failed to generate jwt: %w", err)
 	}
 
 	return CreateSessionResponse{

@@ -61,7 +61,6 @@ func (c authController) Login(w http.ResponseWriter, r *http.Request) {
 		render.JSON(w, r, resp)
 		return
 	} else {
-		// TODO: look into secure cookies to prevent tampering
 		authCookie := http.Cookie{
 			Name:     "access_token",
 			Value:    result.Token,
