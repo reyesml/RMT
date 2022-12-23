@@ -10,8 +10,8 @@ import (
 	"github.com/reyesml/RMT/app/core/identity"
 	"github.com/reyesml/RMT/app/core/interactors"
 	"github.com/reyesml/RMT/app/core/repos"
-	"github.com/reyesml/RMT/app/server/controllers"
-	rmtMiddleware "github.com/reyesml/RMT/app/server/middleware"
+	"github.com/reyesml/RMT/app/httpserver/controllers"
+	rmtMiddleware "github.com/reyesml/RMT/app/httpserver/middleware"
 	"net/http"
 	"os"
 )
