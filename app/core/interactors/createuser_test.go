@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/reyesml/RMT/app/core/database"
-	"github.com/reyesml/RMT/app/repos"
+	"github.com/reyesml/RMT/app/core/repos"
 	"github.com/stretchr/testify/require"
 	"os"
 	"strings"

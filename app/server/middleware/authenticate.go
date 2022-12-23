@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/reyesml/RMT/app/core/identity"
-	"github.com/reyesml/RMT/app/repos"
+	"github.com/reyesml/RMT/app/core/repos"
 	"net/http"
 	"strings"
 )

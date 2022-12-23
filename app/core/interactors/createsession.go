@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/reyesml/RMT/app/core/identity"
-	"github.com/reyesml/RMT/app/repos"
+	"github.com/reyesml/RMT/app/core/repos"
 	"time"
 )
 

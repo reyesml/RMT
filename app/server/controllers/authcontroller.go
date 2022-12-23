@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/go-chi/render"
-	"github.com/reyesml/RMT/app/interactors"
+	"github.com/reyesml/RMT/app/core/interactors"
 	"net/http"
 	"time"
 )

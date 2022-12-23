@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/reyesml/RMT/app/core/config"
 	"github.com/reyesml/RMT/app/core/database"
-	"github.com/reyesml/RMT/app/repos"
+	"github.com/reyesml/RMT/app/core/repos"
 	"os"
 )
 

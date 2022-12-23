@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/reyesml/RMT/app/core/identity"
-	"github.com/reyesml/RMT/app/repos"
+	"github.com/reyesml/RMT/app/core/repos"
 )
 
 type CreateUserRequest struct {
