@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/reyesml/RMT/app/core/config"
+	"github.com/reyesml/RMT/app/config"
 	"github.com/reyesml/RMT/app/core/database"
 	"github.com/reyesml/RMT/app/core/interactors"
 	"github.com/reyesml/RMT/app/core/models"
