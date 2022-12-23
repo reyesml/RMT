@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/reyesml/RMT/app/core/database"
 	"github.com/reyesml/RMT/app/core/repos"
+	"github.com/reyesml/RMT/app/core/utils"
 	"github.com/stretchr/testify/require"
 	"os"
 	"strings"
@@ -19,7 +20,7 @@ func TestCreateUser_Execute(t *testing.T) {
 
 	require.NoError(t, err)
 
-	err = repos.MigrateAll(db)
+	err = utils.MigrateAllModels(db)
 	require.NoError(t, err)
 
 	userRepo := repos.NewUserRepo(db)

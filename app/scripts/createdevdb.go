@@ -5,6 +5,7 @@ import (
 	"github.com/reyesml/RMT/app/core/config"
 	"github.com/reyesml/RMT/app/core/database"
 	"github.com/reyesml/RMT/app/core/repos"
+	"github.com/reyesml/RMT/app/core/utils"
 	"os"
 )
 
@@ -16,7 +17,7 @@ func main() {
 		panic(err)
 	}
 	fmt.Println("Performing db migrations...")
-	err = repos.MigrateAll(db)
+	err = utils.MigrateAllModels(db)
 	if err != nil {
 		panic(err)
 	}
