@@ -1,13 +1,14 @@
 package utils
 
 import (
-	models2 "github.com/reyesml/RMT/app/core/models"
+	"github.com/reyesml/RMT/app/core/models"
 	"gorm.io/gorm"
 )
 
-var models = []interface{}{
-	&models2.User{},
-	&models2.Session{},
+var AllModels = []interface{}{
+	&models.User{},
+	&models.Session{},
+	&models.Person{},
 }
 
 // MigrateAllModels runs all pending database
@@ -15,6 +16,6 @@ var models = []interface{}{
 // slice above). This is not intended to be used
 // in production databases. Instead, refer to {tbd}.
 func MigrateAllModels(db *gorm.DB) error {
-	err := db.AutoMigrate(models...)
+	err := db.AutoMigrate(AllModels...)
 	return err
 }

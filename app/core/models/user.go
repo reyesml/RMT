@@ -2,12 +2,14 @@ package models
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 	"github.com/reyesml/RMT/app/core/database"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
 	database.BaseModel
+	database.Segmented
 	Username      string `gorm:"unique"`
 	UsernameLower string `gorm:"unique;not null;check:username_lower <> ''"`
 	PasswordHash  string
@@ -19,8 +21,15 @@ func NewUser(uname string, pass string) (*User, error) {
 		return nil, fmt.Errorf("username is required")
 	}
 
-	u := &User{Username: uname}
-	err := u.SetPassword(pass)
+	segmentUUID, err := uuid.NewRandom()
+	if err != nil {
+		return nil, fmt.Errorf("segment uuid: %w", err)
+	}
+	u := &User{
+		Username:  uname,
+		Segmented: database.Segmented{SegmentUUID: segmentUUID},
+	}
+	err = u.SetPassword(pass)
 	if err != nil {
 		return nil, err
 	}

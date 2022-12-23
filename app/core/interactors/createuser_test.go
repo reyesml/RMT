@@ -38,6 +38,8 @@ func TestCreateUser_Execute(t *testing.T) {
 	user, err := userRepo.GetByUUID(resp.UUID)
 	require.NoError(t, err)
 	require.NotEmpty(t, user.ID)
+	require.NotEqual(t, uuid.Nil, user.UUID)
+	require.NotEqual(t, uuid.Nil, user.SegmentUUID)
 
 	require.NotEqual(t, req.Password, user.PasswordHash)
 	require.True(t, user.IsPasswordCorrect("plaintext_password"))
