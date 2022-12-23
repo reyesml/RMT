@@ -8,6 +8,7 @@ import (
 
 type PersonRepo interface {
 	Create(person *models.Person) error
+	CreateMany(people *[]models.Person) error
 	GetByUUID(uuid uuid.UUID) (models.Person, error)
 	ListBySegment(segment uuid.UUID) ([]models.Person, error)
 }
@@ -22,6 +23,11 @@ func NewPersonRepo(db *gorm.DB) personRepo {
 
 func (r personRepo) Create(person *models.Person) error {
 	result := r.db.Create(person)
+	return result.Error
+}
+
+func (r personRepo) CreateMany(people *[]models.Person) error {
+	result := r.db.Create(people)
 	return result.Error
 }
 
