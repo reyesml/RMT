@@ -1,8 +1,15 @@
 package database
 
 import (
+	"errors"
 	"github.com/google/uuid"
 )
+
+// SegmentCtxKey used for setting and getting the segment
+// value from the current context
+const SegmentCtxKey = "db-segment"
+
+var SegmentMissingErr = errors.New("segment not provided")
 
 // Segmented includes a SegmentUUID. This should be included in
 // models that need to be segmented across different user accounts.

@@ -4,14 +4,14 @@ import (
 	"context"
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/reyesml/RMT/app/core/database"
 	"github.com/reyesml/RMT/app/core/models"
 	"github.com/reyesml/RMT/app/core/repos"
 )
 
 type CreatePersonRequest struct {
-	FirstName   string
-	LastName    string
-	SegmentUUID uuid.UUID
+	FirstName string
+	LastName  string
 }
 
 type CreatePerson interface {
@@ -29,8 +29,11 @@ type createPerson struct {
 }
 
 func (ia createPerson) Execute(ctx context.Context, req CreatePersonRequest) (models.Person, error) {
-	_ = ctx
-	person := models.NewPerson(req.SegmentUUID, req.FirstName, req.LastName)
+	segment, ok := ctx.Value(database.SegmentCtxKey).(uuid.UUID)
+	if !ok || segment == uuid.Nil {
+		return models.Person{}, database.SegmentMissingErr
+	}
+	person := models.NewPerson(segment, req.FirstName, req.LastName)
 	if err := ia.personRepo.Create(person); err != nil {
 		return models.Person{}, fmt.Errorf("creating person: %w", err)
 	}

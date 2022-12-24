@@ -24,26 +24,23 @@ func TestCreatePerson_Execute(t *testing.T) {
 	personRepo := repos.NewPersonRepo(db)
 	cp := NewCreatePerson(personRepo)
 	segment, err := uuid.NewRandom()
+	ctx := context.WithValue(context.Background(), database.SegmentCtxKey, segment)
 	require.NoError(t, err)
 	req := CreatePersonRequest{
-		FirstName:   "Sam",
-		LastName:    "Doe",
-		SegmentUUID: segment,
+		FirstName: "Sam",
+		LastName:  "Doe",
 	}
 
-	person, err := cp.Execute(context.Background(), req)
+	person, err := cp.Execute(ctx, req)
 	require.NoError(t, err)
 	require.Equal(t, req.LastName, person.LastName)
 	require.Equal(t, req.FirstName, person.FirstName)
 	require.NotEqual(t, uuid.Nil, person.UUID)
 	require.NotEqual(t, uuid.Nil, person.SegmentUUID)
-	require.Equal(t, req.SegmentUUID, person.SegmentUUID)
+	require.Equal(t, segment, person.SegmentUUID)
 
-	//attempt insert with nil segment
-	req2 := CreatePersonRequest{
-		FirstName: "John",
-		LastName:  "Doe",
-	}
-	_, err = cp.Execute(context.Background(), req2)
+	//attempt insert with nil
+	ctx2 := context.WithValue(context.Background(), database.SegmentCtxKey, uuid.UUID{})
+	_, err = cp.Execute(ctx2, req)
 	require.Error(t, err)
 }

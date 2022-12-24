@@ -1,11 +1,16 @@
 package models
 
 import (
+	"errors"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/reyesml/RMT/app/core/database"
 	"golang.org/x/crypto/bcrypt"
 )
+
+const UserCtxKey = "user"
+
+var UserMissingErr = errors.New("user not provided")
 
 type User struct {
 	database.BaseModel
