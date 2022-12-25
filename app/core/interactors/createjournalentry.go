@@ -27,7 +27,7 @@ type createJournalEntry struct {
 }
 
 func (ia createJournalEntry) Execute(ctx context.Context, req CreateJournalEntryRequest) (models.JournalEntry, error) {
-	user, ok := ctx.Value(models.UserCtxKey).(models.User)
+	user, ok := ctx.Value(models.UserCtxKey).(models.CurrentUser)
 	if !ok {
 		return models.JournalEntry{}, models.UserMissingErr
 	}

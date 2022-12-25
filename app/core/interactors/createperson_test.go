@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/google/uuid"
 	"github.com/reyesml/RMT/app/core/database"
+	"github.com/reyesml/RMT/app/core/models"
 	"github.com/reyesml/RMT/app/core/repos"
 	"github.com/reyesml/RMT/app/core/utils"
 	"github.com/stretchr/testify/require"
@@ -20,11 +21,18 @@ func TestCreatePerson_Execute(t *testing.T) {
 
 	err = utils.MigrateAllModels(db)
 	require.NoError(t, err)
+	userRepo := repos.NewUserRepo(db)
+	user, err := models.NewUser("foobar", "some_password")
+	require.NoError(t, err)
+	require.NoError(t, userRepo.Create(user))
+	currUser := models.CurrentUser{
+		User:        *user,
+		SessionUUID: uuid.Nil,
+	}
 
 	personRepo := repos.NewPersonRepo(db)
 	cp := NewCreatePerson(personRepo)
-	segment, err := uuid.NewRandom()
-	ctx := context.WithValue(context.Background(), database.SegmentCtxKey, segment)
+	ctx := context.WithValue(context.Background(), models.UserCtxKey, currUser)
 	require.NoError(t, err)
 	req := CreatePersonRequest{
 		FirstName: "Sam",
@@ -37,7 +45,7 @@ func TestCreatePerson_Execute(t *testing.T) {
 	require.Equal(t, req.FirstName, person.FirstName)
 	require.NotEqual(t, uuid.Nil, person.UUID)
 	require.NotEqual(t, uuid.Nil, person.SegmentUUID)
-	require.Equal(t, segment, person.SegmentUUID)
+	require.Equal(t, user.SegmentUUID, person.SegmentUUID)
 
 	//attempt insert with nil
 	ctx2 := context.WithValue(context.Background(), database.SegmentCtxKey, uuid.UUID{})

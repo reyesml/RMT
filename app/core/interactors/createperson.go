@@ -29,11 +29,11 @@ type createPerson struct {
 }
 
 func (ia createPerson) Execute(ctx context.Context, req CreatePersonRequest) (models.Person, error) {
-	segment, ok := ctx.Value(database.SegmentCtxKey).(uuid.UUID)
-	if !ok || segment == uuid.Nil {
+	user, ok := ctx.Value(models.UserCtxKey).(models.CurrentUser)
+	if !ok || user.SegmentUUID == uuid.Nil {
 		return models.Person{}, database.SegmentMissingErr
 	}
-	person := models.NewPerson(segment, req.FirstName, req.LastName)
+	person := models.NewPerson(user.SegmentUUID, req.FirstName, req.LastName)
 	if err := ia.personRepo.Create(person); err != nil {
 		return models.Person{}, fmt.Errorf("creating person: %w", err)
 	}

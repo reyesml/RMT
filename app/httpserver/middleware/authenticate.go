@@ -36,13 +36,12 @@ func Authenticate(sessionRepo repos.SessionRepo, signingSecret string) func(next
 				return
 			}
 
-			// add our session to the request context
-			ctx := context.WithValue(r.Context(), models.SessionContextKey, models.SessionContext{
-				UserUUID:    session.User.UUID,
+			// add our CurrentUser to the context
+			ctx := context.WithValue(r.Context(), models.UserCtxKey, models.CurrentUser{
+				User:        session.User,
 				SessionUUID: session.UUID,
 			})
 			r = r.WithContext(ctx)
-
 			next.ServeHTTP(w, r)
 		})
 	}

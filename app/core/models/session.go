@@ -62,10 +62,3 @@ func GetSessionUUIDFromJWT(tokenstr string, signingSecret string) (uuid.UUID, er
 	}
 	return uuid.Parse(claims.ID)
 }
-
-const SessionContextKey = "rmt-session"
-
-type SessionContext struct {
-	UserUUID    uuid.UUID
-	SessionUUID uuid.UUID
-}
