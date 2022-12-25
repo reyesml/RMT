@@ -15,7 +15,7 @@ type CreateJournalEntryRequest struct {
 }
 
 type CreateJournalEntry interface {
-	Execute(ctx context.Context, req CreateJournalEntryRequest)
+	Execute(ctx context.Context, req CreateJournalEntryRequest) (models.JournalEntry, error)
 }
 
 func NewCreateJournalEntry(journalRepo repos.JournalEntryRepo) createJournalEntry {
@@ -34,6 +34,8 @@ func (ia createJournalEntry) Execute(ctx context.Context, req CreateJournalEntry
 	if user.SegmentUUID == uuid.Nil {
 		return models.JournalEntry{}, database.SegmentMissingErr
 	}
+
+	// TODO: validate user-supplied fields
 
 	je := models.JournalEntry{
 		Segmented: database.Segmented{SegmentUUID: user.SegmentUUID},

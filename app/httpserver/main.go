@@ -27,10 +27,9 @@ func main() {
 	}
 	userRepo := repos.NewUserRepo(db)
 	sessionRepo := repos.NewSessionRepo(db)
+	journalRepo := repos.NewJournalEntryRepo(db)
 
 	//Setup interactors
-	createUser := interactors.NewCreateUser(userRepo)
-	_ = createUser
 	createSession := interactors.NewCreateSession(userRepo, sessionRepo, cfg.Session.SigningSecret)
 
 	//Setup controllers
@@ -41,17 +40,19 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
+	//Unauthenticated routes
+	r.Group(func(r chi.Router) {
+		r.Post("/login", authController.Login)
+	})
+
 	//Authenticated routes
 	r.Group(func(r chi.Router) {
 		r.Use(rmtMiddleware.Authenticate(sessionRepo, cfg.Session.SigningSecret))
 
+		cje := interactors.NewCreateJournalEntry(journalRepo)
+		journalController := controllers.NewJournalController(cje)
+		r.Post("/journal", journalController.Create)
 	})
-
-	//Unauthenticated routes
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello, world."))
-	})
-	r.Post("/login", authController.Login)
 
 	http.ListenAndServe(fmt.Sprintf(":%v", cfg.Server.Port), r)
 }
