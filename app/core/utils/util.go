@@ -9,7 +9,7 @@ var AllModels = []interface{}{
 	&models.User{},
 	&models.Session{},
 	&models.Person{},
-	&models.JournalEntry{},
+	&models.Journal{},
 }
 
 // MigrateAllModels runs all pending database

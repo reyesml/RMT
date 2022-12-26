@@ -10,11 +10,11 @@ import (
 type User struct {
 	database.BaseModel
 	database.Segmented
-	Username       string `gorm:"unique"`
-	UsernameLower  string `gorm:"unique;not null;check:username_lower <> ''"`
-	PasswordHash   string
-	Admin          bool
-	JournalEntries []JournalEntry
+	Username      string `gorm:"unique"`
+	UsernameLower string `gorm:"unique;not null;check:username_lower <> ''"`
+	PasswordHash  string
+	Admin         bool
+	Journals      []Journal
 }
 
 func NewUser(uname string, pass string) (*User, error) {

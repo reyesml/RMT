@@ -12,7 +12,7 @@ import (
 	"testing"
 )
 
-func TestCreateJournalEntry_Execute(t *testing.T) {
+func TestCreateJournal_Execute(t *testing.T) {
 	testDBId := "TestCreatePerson.db"
 	db, err := database.Connect(testDBId)
 	defer os.Remove(testDBId)
@@ -32,9 +32,9 @@ func TestCreateJournalEntry_Execute(t *testing.T) {
 	}
 	ctx := context.WithValue(context.Background(), models.UserCtxKey, currUser)
 
-	jr := repos.NewJournalEntryRepo(db)
-	cje := NewCreateJournalEntry(jr)
-	req := CreateJournalEntryRequest{
+	jr := repos.NewJournalRepo(db)
+	cje := NewCreateJournal(jr)
+	req := CreateJournalRequest{
 		Mood:  "productive",
 		Title: "Writing Tests...",
 		Body:  "Dear Diary,\nToday I wrote a test about journals.",

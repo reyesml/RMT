@@ -12,12 +12,12 @@ type JournalController interface {
 	Create(w http.ResponseWriter, r *http.Request)
 }
 
-func NewJournalController(cje interactors.CreateJournalEntry) journalController {
+func NewJournalController(cje interactors.CreateJournal) journalController {
 	return journalController{cje: cje}
 }
 
 type journalController struct {
-	cje interactors.CreateJournalEntry
+	cje interactors.CreateJournal
 }
 
 type CreateJournalRequest struct {
@@ -40,7 +40,7 @@ func (c journalController) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	je, err := c.cje.Execute(r.Context(), interactors.CreateJournalEntryRequest{
+	je, err := c.cje.Execute(r.Context(), interactors.CreateJournalRequest{
 		Mood:  createReq.Mood,
 		Title: createReq.Title,
 		Body:  createReq.Body,

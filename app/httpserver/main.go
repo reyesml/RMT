@@ -27,7 +27,7 @@ func main() {
 	}
 	userRepo := repos.NewUserRepo(db)
 	sessionRepo := repos.NewSessionRepo(db)
-	journalRepo := repos.NewJournalEntryRepo(db)
+	journalRepo := repos.NewJournalRepo(db)
 
 	//Setup interactors
 	createSession := interactors.NewCreateSession(userRepo, sessionRepo, cfg.Session.SigningSecret)
@@ -49,7 +49,7 @@ func main() {
 	r.Group(func(r chi.Router) {
 		r.Use(rmtMiddleware.Authenticate(sessionRepo, cfg.Session.SigningSecret))
 
-		cje := interactors.NewCreateJournalEntry(journalRepo)
+		cje := interactors.NewCreateJournal(journalRepo)
 		journalController := controllers.NewJournalController(cje)
 		r.Post("/journal", journalController.Create)
 	})

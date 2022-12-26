@@ -2,7 +2,7 @@ package models
 
 import "github.com/reyesml/RMT/app/core/database"
 
-type JournalEntry struct {
+type Journal struct {
 	database.BaseModel
 	database.Segmented
 	Mood   string
