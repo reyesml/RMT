@@ -1,6 +1,7 @@
 package interactors
 
 import (
+	"context"
 	"github.com/google/uuid"
 	"github.com/reyesml/RMT/app/core/database"
 	"github.com/reyesml/RMT/app/core/models"
@@ -21,6 +22,11 @@ func TestListPeople_Execute(t *testing.T) {
 	err = utils.MigrateAllModels(db)
 	require.NoError(t, err)
 
+	user, err := models.NewUser("test-user", "plain_password")
+	require.NoError(t, err)
+	userRepo := repos.NewUserRepo(db)
+	require.NoError(t, userRepo.Create(user))
+
 	personRepo := repos.NewPersonRepo(db)
 	seg1, err := uuid.NewRandom()
 	require.NoError(t, err)
@@ -40,14 +46,19 @@ func TestListPeople_Execute(t *testing.T) {
 	require.NoError(t, personRepo.CreateMany(&seg1people))
 	require.NoError(t, personRepo.CreateMany(&seg2people))
 
-	seg1list, err := personRepo.ListBySegment(seg1)
+	listPeople := NewListPeople(personRepo)
+	user.SegmentUUID = seg1
+	ctx := utils.SetCurrentUser(context.Background(), *user, uuid.Nil)
+	seg1list, err := listPeople.Execute(ctx)
 	require.NoError(t, err)
 	require.Equal(t, len(seg1people), len(seg1list))
 	for i, p := range seg1list {
 		require.Equal(t, p.UUID, seg1people[i].UUID)
 	}
 
-	seg2list, err := personRepo.ListBySegment(seg2)
+	user.SegmentUUID = seg2
+	ctx = utils.SetCurrentUser(context.Background(), *user, uuid.Nil)
+	seg2list, err := listPeople.Execute(ctx)
 	require.NoError(t, err)
 	require.Equal(t, len(seg2people), len(seg2list))
 	for i, p := range seg2list {

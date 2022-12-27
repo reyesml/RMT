@@ -7,6 +7,7 @@ import (
 	"github.com/reyesml/RMT/app/core/database"
 	"github.com/reyesml/RMT/app/core/models"
 	"github.com/reyesml/RMT/app/core/repos"
+	"github.com/reyesml/RMT/app/core/utils"
 )
 
 type CreatePersonRequest struct {
@@ -29,8 +30,8 @@ type createPerson struct {
 }
 
 func (ia createPerson) Execute(ctx context.Context, req CreatePersonRequest) (models.Person, error) {
-	user, ok := ctx.Value(models.UserCtxKey).(models.CurrentUser)
-	if !ok || user.SegmentUUID == uuid.Nil {
+	user, err := utils.GetCurrentUser(ctx)
+	if err != nil || user.SegmentUUID == uuid.Nil {
 		return models.Person{}, database.SegmentMissingErr
 	}
 	person := models.NewPerson(user.SegmentUUID, req.FirstName, req.LastName)

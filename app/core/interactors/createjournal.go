@@ -7,6 +7,7 @@ import (
 	"github.com/reyesml/RMT/app/core/database"
 	"github.com/reyesml/RMT/app/core/models"
 	"github.com/reyesml/RMT/app/core/repos"
+	"github.com/reyesml/RMT/app/core/utils"
 )
 
 type CreateJournalRequest struct {
@@ -31,9 +32,9 @@ type createJournal struct {
 }
 
 func (ia createJournal) Execute(ctx context.Context, req CreateJournalRequest) (models.Journal, error) {
-	user, ok := ctx.Value(models.UserCtxKey).(models.CurrentUser)
-	if !ok {
-		return models.Journal{}, models.UserMissingErr
+	user, err := utils.GetCurrentUser(ctx)
+	if err != nil {
+		return models.Journal{}, err
 	}
 	if user.SegmentUUID == uuid.Nil {
 		return models.Journal{}, database.SegmentMissingErr
@@ -53,7 +54,7 @@ func (ia createJournal) Execute(ctx context.Context, req CreateJournalRequest) (
 		UserId:    user.ID,
 	}
 
-	err := ia.journalRepo.Create(&je)
+	err = ia.journalRepo.Create(&je)
 	if err != nil {
 		return models.Journal{}, err
 	}

@@ -1,7 +1,6 @@
 package models
 
 import (
-	"errors"
 	"github.com/google/uuid"
 )
 
@@ -11,7 +10,3 @@ type CurrentUser struct {
 	User
 	SessionUUID uuid.UUID
 }
-
-const UserCtxKey = "current-user"
-
-var UserMissingErr = errors.New("user not provided")

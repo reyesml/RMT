@@ -26,24 +26,21 @@ func TestListJournals_Execute(t *testing.T) {
 	require.NoError(t, err)
 	userRepo := repos.NewUserRepo(db)
 	require.NoError(t, userRepo.Create(user))
-	currUser := models.CurrentUser{
-		User:        *user,
-		SessionUUID: uuid.Nil,
-	}
+
 	user1Journals := []models.Journal{
 		{
-			Segmented: database.Segmented{SegmentUUID: currUser.SegmentUUID},
+			Segmented: database.Segmented{SegmentUUID: user.SegmentUUID},
 			Mood:      "productive",
 			Title:     "more tests!!",
 			Body:      "OMG I love writing tests.",
-			UserId:    currUser.ID,
+			UserId:    user.ID,
 		},
 		{
-			Segmented: database.Segmented{SegmentUUID: currUser.SegmentUUID},
+			Segmented: database.Segmented{SegmentUUID: user.SegmentUUID},
 			Mood:      "productive",
 			Title:     "wow, tests!",
 			Body:      "So many tests (:",
-			UserId:    currUser.ID,
+			UserId:    user.ID,
 		},
 	}
 	journalRepo := repos.NewJournalRepo(db)
@@ -64,12 +61,12 @@ func TestListJournals_Execute(t *testing.T) {
 	require.NoError(t, journalRepo.CreateMany(&user2Journals))
 
 	lje := NewListJournals(journalRepo)
-	ctx := context.WithValue(context.Background(), models.UserCtxKey, currUser)
+	ctx := utils.SetCurrentUser(context.Background(), *user, uuid.Nil)
 	result, err := lje.Execute(ctx)
 	require.Equal(t, len(user1Journals), len(result))
 	for i, je := range result {
 		require.Equal(t, user1Journals[i].UUID, je.UUID)
-		require.Equal(t, currUser.SegmentUUID, je.SegmentUUID)
+		require.Equal(t, user.SegmentUUID, je.SegmentUUID)
 		require.NotEqual(t, uuid.Nil, je.User.UUID)
 	}
 }

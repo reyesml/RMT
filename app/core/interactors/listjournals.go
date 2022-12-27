@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/reyesml/RMT/app/core/models"
 	"github.com/reyesml/RMT/app/core/repos"
+	"github.com/reyesml/RMT/app/core/utils"
 )
 
 type ListJournals interface {
@@ -19,9 +20,9 @@ type listJournals struct {
 }
 
 func (ia listJournals) Execute(ctx context.Context) ([]models.Journal, error) {
-	user, ok := ctx.Value(models.UserCtxKey).(models.CurrentUser)
-	if !ok || user.ID == 0 {
-		return []models.Journal{}, models.UserMissingErr
+	user, err := utils.GetCurrentUser(ctx)
+	if err != nil {
+		return []models.Journal{}, err
 	}
 
 	return ia.journalRepo.ListByUserIdWithUser(user.ID)

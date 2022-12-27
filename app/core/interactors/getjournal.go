@@ -8,6 +8,7 @@ import (
 	"github.com/reyesml/RMT/app/core/database"
 	"github.com/reyesml/RMT/app/core/models"
 	"github.com/reyesml/RMT/app/core/repos"
+	"github.com/reyesml/RMT/app/core/utils"
 )
 
 var ErrNotFound = errors.New("not found")
@@ -31,9 +32,9 @@ type getJournal struct {
 }
 
 func (ia getJournal) Execute(ctx context.Context, req GetJournalRequest) (models.Journal, error) {
-	user, ok := ctx.Value(models.UserCtxKey).(models.CurrentUser)
-	if !ok {
-		return models.Journal{}, models.UserMissingErr
+	user, err := utils.GetCurrentUser(ctx)
+	if err != nil {
+		return models.Journal{}, err
 	}
 	if user.SegmentUUID == uuid.Nil {
 		return models.Journal{}, database.SegmentMissingErr

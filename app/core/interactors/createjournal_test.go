@@ -27,11 +27,7 @@ func TestCreateJournal_Execute(t *testing.T) {
 	require.NoError(t, err)
 	userRepo := repos.NewUserRepo(db)
 	require.NoError(t, userRepo.Create(user))
-	currUser := models.CurrentUser{
-		User:        *user,
-		SessionUUID: uuid.Nil,
-	}
-	ctx := context.WithValue(context.Background(), models.UserCtxKey, currUser)
+	ctx := utils.SetCurrentUser(context.Background(), *user, uuid.Nil)
 
 	jr := repos.NewJournalRepo(db)
 	cje := NewCreateJournal(jr)

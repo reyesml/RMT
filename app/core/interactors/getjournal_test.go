@@ -26,11 +26,7 @@ func TestGetJournal_Execute(t *testing.T) {
 	require.NoError(t, err)
 	userRepo := repos.NewUserRepo(db)
 	require.NoError(t, userRepo.Create(user))
-	currUser := models.CurrentUser{
-		User:        *user,
-		SessionUUID: uuid.Nil,
-	}
-	ctx := context.WithValue(context.Background(), models.UserCtxKey, currUser)
+	ctx := utils.SetCurrentUser(context.Background(), *user, uuid.Nil)
 
 	journalRepo := repos.NewJournalRepo(db)
 	je := models.Journal{
@@ -51,9 +47,9 @@ func TestGetJournal_Execute(t *testing.T) {
 	require.Equal(t, je.Body, foundJournal.Body)
 
 	//attempt to fetch journal from different segment
-	currUser.SegmentUUID, err = uuid.NewRandom()
+	user.SegmentUUID, err = uuid.NewRandom()
 	require.NoError(t, err)
-	ctx = context.WithValue(context.Background(), models.UserCtxKey, currUser)
+	ctx = context.WithValue(context.Background(), user, uuid.Nil)
 	foundJournal, err = gje.Execute(ctx, GetJournalRequest{UUID: je.UUID})
 	require.Error(t, err)
 	require.Equal(t, uuid.Nil, foundJournal.UUID)

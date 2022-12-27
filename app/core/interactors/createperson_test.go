@@ -25,14 +25,10 @@ func TestCreatePerson_Execute(t *testing.T) {
 	user, err := models.NewUser("foobar", "some_password")
 	require.NoError(t, err)
 	require.NoError(t, userRepo.Create(user))
-	currUser := models.CurrentUser{
-		User:        *user,
-		SessionUUID: uuid.Nil,
-	}
 
 	personRepo := repos.NewPersonRepo(db)
 	cp := NewCreatePerson(personRepo)
-	ctx := context.WithValue(context.Background(), models.UserCtxKey, currUser)
+	ctx := utils.SetCurrentUser(context.Background(), *user, user.SegmentUUID)
 	require.NoError(t, err)
 	req := CreatePersonRequest{
 		FirstName: "Sam",
@@ -47,8 +43,8 @@ func TestCreatePerson_Execute(t *testing.T) {
 	require.NotEqual(t, uuid.Nil, person.SegmentUUID)
 	require.Equal(t, user.SegmentUUID, person.SegmentUUID)
 
-	//attempt insert with nil
-	ctx2 := context.WithValue(context.Background(), database.SegmentCtxKey, uuid.UUID{})
+	//attempt insert with nil segment
+	ctx2 := context.WithValue(context.Background(), user, uuid.Nil)
 	_, err = cp.Execute(ctx2, req)
 	require.Error(t, err)
 }

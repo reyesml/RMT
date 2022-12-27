@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/reyesml/RMT/app/core/database"
+	"github.com/reyesml/RMT/app/core/models"
 	"github.com/reyesml/RMT/app/core/repos"
 	"github.com/reyesml/RMT/app/core/utils"
 	"github.com/stretchr/testify/require"
@@ -24,12 +25,19 @@ func TestCreateUser_Execute(t *testing.T) {
 	require.NoError(t, err)
 
 	userRepo := repos.NewUserRepo(db)
+	adminUser, err := models.NewUser("admin", "admin_password")
+	require.NoError(t, err)
+	adminUser.Admin = true
+	require.NoError(t, userRepo.Create(adminUser))
+	ctx := utils.SetCurrentUser(context.Background(), *adminUser, uuid.Nil)
+
 	req := CreateUserRequest{
 		Username: "foobar",
 		Password: "plaintext_password",
 	}
 	cu := NewCreateUser(userRepo)
-	resp, err := cu.Execute(context.Background(), req)
+
+	resp, err := cu.Execute(ctx, req)
 	require.NoError(t, err)
 	require.Equal(t, req.Username, resp.Username)
 	require.NotEmpty(t, resp.UUID.String())
@@ -58,6 +66,6 @@ func TestCreateUser_Execute(t *testing.T) {
 		Username: fmt.Sprintf("%v2", req.Username),
 		Password: "plaintext_password2",
 	}
-	resp, err = cu.Execute(context.Background(), req3)
+	resp, err = cu.Execute(ctx, req3)
 	require.NoError(t, err)
 }

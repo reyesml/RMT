@@ -1,10 +1,10 @@
 package middleware
 
 import (
-	"context"
 	"fmt"
 	"github.com/reyesml/RMT/app/core/models"
 	"github.com/reyesml/RMT/app/core/repos"
+	"github.com/reyesml/RMT/app/core/utils"
 	"net/http"
 	"strings"
 )
@@ -37,10 +37,7 @@ func Authenticate(sessionRepo repos.SessionRepo, signingSecret string) func(next
 			}
 
 			// add our CurrentUser to the context
-			ctx := context.WithValue(r.Context(), models.UserCtxKey, models.CurrentUser{
-				User:        session.User,
-				SessionUUID: session.UUID,
-			})
+			ctx := utils.SetCurrentUser(r.Context(), session.User, session.UUID)
 			r = r.WithContext(ctx)
 			next.ServeHTTP(w, r)
 		})

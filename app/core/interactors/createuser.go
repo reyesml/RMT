@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/reyesml/RMT/app/core/models"
 	"github.com/reyesml/RMT/app/core/repos"
+	"github.com/reyesml/RMT/app/core/utils"
 )
 
 type CreateUserRequest struct {
@@ -31,7 +32,10 @@ type createUser struct {
 }
 
 func (ia createUser) Execute(ctx context.Context, req CreateUserRequest) (CreateUserResponse, error) {
-	_ = ctx
+	currUser, err := utils.GetCurrentUser(ctx)
+	if err != nil || !currUser.Admin {
+		return CreateUserResponse{}, fmt.Errorf("create user: requires admin")
+	}
 	users, err := ia.userRepo.FindByUsername(req.Username)
 	if err != nil {
 		return CreateUserResponse{}, err
