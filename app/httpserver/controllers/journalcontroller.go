@@ -80,13 +80,13 @@ func (c journalController) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 type JournalResponse struct {
-	UUID          uuid.UUID `json:"uuid"`
-	Title         string    `json:"title"`
-	Body          string    `json:"body"`
-	Mood          string    `json:"mood"`
-	CreatedByUUID uuid.UUID `json:"createdByUUID"`
-	CreatedAt     time.Time `json:"createdAt"`
-	UpdatedAt     time.Time `json:"updatedAt"`
+	UUID      uuid.UUID `json:"uuid"`
+	Title     string    `json:"title"`
+	Body      string    `json:"body"`
+	Mood      string    `json:"mood"`
+	UserUUID  uuid.UUID `json:"userUUID"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 type GetJournalResponse struct {
@@ -140,12 +140,12 @@ func (c journalController) List(w http.ResponseWriter, r *http.Request) {
 
 func buildJournalResponse(je models.Journal) JournalResponse {
 	return JournalResponse{
-		UUID:          je.UUID,
-		Title:         je.Title,
-		Body:          je.Body,
-		Mood:          je.Mood,
-		CreatedByUUID: je.User.UUID,
-		CreatedAt:     je.CreatedAt,
-		UpdatedAt:     je.UpdatedAt,
+		UUID:      je.UUID,
+		Title:     je.Title,
+		Body:      je.Body,
+		Mood:      je.Mood,
+		UserUUID:  je.User.UUID,
+		CreatedAt: je.CreatedAt,
+		UpdatedAt: je.UpdatedAt,
 	}
 }
