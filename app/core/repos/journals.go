@@ -11,6 +11,7 @@ var ErrNotFound = errors.New("not found")
 
 type JournalRepo interface {
 	Create(je *models.Journal) error
+	CreateMany(jes *[]models.Journal) error
 	GetByUUIDWithUser(uuid uuid.UUID, segment uuid.UUID) (models.Journal, error)
 	ListByUserIdWithUser(uid uint) ([]models.Journal, error)
 }
@@ -25,6 +26,11 @@ type journalRepo struct {
 
 func (r journalRepo) Create(je *models.Journal) error {
 	result := r.db.Create(je)
+	return result.Error
+}
+
+func (r journalRepo) CreateMany(jes *[]models.Journal) error {
+	result := r.db.Create(jes)
 	return result.Error
 }
 
