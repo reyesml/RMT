@@ -8,7 +8,7 @@ import (
 
 type JournalRepo interface {
 	Create(je *models.Journal) error
-	GetByUUID(uuid uuid.UUID) (models.Journal, error)
+	GetByUUID(uuid uuid.UUID, segment uuid.UUID) (models.Journal, error)
 	ListByUserId(uid uint) ([]models.Journal, error)
 }
 
@@ -25,9 +25,9 @@ func (r journalRepo) Create(je *models.Journal) error {
 	return result.Error
 }
 
-func (r journalRepo) GetByUUID(uuid uuid.UUID) (models.Journal, error) {
+func (r journalRepo) GetByUUID(uuid uuid.UUID, segment uuid.UUID) (models.Journal, error) {
 	var je models.Journal
-	result := r.db.Where("UUID = ?", uuid).First(&je)
+	result := r.db.Where("UUID = ? AND SEGMENT_UUID = ?", uuid, segment).First(&je)
 	return je, result.Error
 }
 
