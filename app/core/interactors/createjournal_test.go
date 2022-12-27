@@ -14,7 +14,7 @@ import (
 )
 
 func TestCreateJournal_Execute(t *testing.T) {
-	testDBId := "TestCreatePerson.db"
+	testDBId := "TestCreateJournal.db"
 	db, err := database.Connect(testDBId)
 	defer os.Remove(testDBId)
 
