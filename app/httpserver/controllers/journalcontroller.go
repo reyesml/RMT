@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/go-chi/render"
 	"github.com/google/uuid"
 	"github.com/reyesml/RMT/app/core/interactors"
@@ -45,7 +46,17 @@ func (c journalController) Create(w http.ResponseWriter, r *http.Request) {
 		Title: createReq.Title,
 		Body:  createReq.Body,
 	})
-	// TODO: different responses based off of user error vs server error
+
+	if errors.Is(err, interactors.MissingJournalTitleErr) {
+		w.WriteHeader(http.StatusBadRequest)
+		render.JSON(w, r, CreateJournalResponse{Error: "title is required"})
+		return
+	}
+	if errors.Is(err, interactors.MissingJournalBodyErr) {
+		w.WriteHeader(http.StatusBadRequest)
+		render.JSON(w, r, CreateJournalResponse{Error: "body is required"})
+		return
+	}
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		render.JSON(w, r, CreateJournalResponse{Error: "something went wrong"})
@@ -55,5 +66,4 @@ func (c journalController) Create(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, CreateJournalResponse{
 		UUID: je.UUID,
 	})
-
 }

@@ -2,6 +2,7 @@ package interactors
 
 import (
 	"context"
+	"errors"
 	"github.com/google/uuid"
 	"github.com/reyesml/RMT/app/core/database"
 	"github.com/reyesml/RMT/app/core/models"
@@ -13,6 +14,9 @@ type CreateJournalRequest struct {
 	Title string
 	Body  string
 }
+
+var MissingJournalTitleErr = errors.New("missing journal title")
+var MissingJournalBodyErr = errors.New("missing journal body")
 
 type CreateJournal interface {
 	Execute(ctx context.Context, req CreateJournalRequest) (models.Journal, error)
@@ -34,8 +38,12 @@ func (ia createJournal) Execute(ctx context.Context, req CreateJournalRequest) (
 	if user.SegmentUUID == uuid.Nil {
 		return models.Journal{}, database.SegmentMissingErr
 	}
-
-	// TODO: validate user-supplied fields
+	if len(req.Title) == 0 {
+		return models.Journal{}, MissingJournalTitleErr
+	}
+	if len(req.Body) == 0 {
+		return models.Journal{}, MissingJournalBodyErr
+	}
 
 	je := models.Journal{
 		Segmented: database.Segmented{SegmentUUID: user.SegmentUUID},

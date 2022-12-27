@@ -2,6 +2,7 @@ package interactors
 
 import (
 	"context"
+	"errors"
 	"github.com/google/uuid"
 	"github.com/reyesml/RMT/app/core/database"
 	"github.com/reyesml/RMT/app/core/models"
@@ -47,4 +48,20 @@ func TestCreateJournal_Execute(t *testing.T) {
 	require.Equal(t, req.Mood, journal.Mood)
 	require.Equal(t, req.Title, journal.Title)
 	require.Equal(t, req.Body, journal.Body)
+
+	missingTitle := CreateJournalRequest{
+		Mood:  "",
+		Title: "",
+		Body:  "Body",
+	}
+	_, err = cje.Execute(ctx, missingTitle)
+	require.True(t, errors.Is(err, MissingJournalTitleErr))
+
+	missingBody := CreateJournalRequest{
+		Mood:  "",
+		Title: "title",
+		Body:  "",
+	}
+	_, err = cje.Execute(ctx, missingBody)
+	require.True(t, errors.Is(err, MissingJournalBodyErr))
 }
