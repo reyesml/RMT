@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/render"
 	"github.com/google/uuid"
 	"github.com/reyesml/RMT/app/core/interactors"
+	"github.com/reyesml/RMT/app/core/models"
 	"net/http"
 	"time"
 )
@@ -14,18 +15,21 @@ import (
 type JournalController interface {
 	Create(w http.ResponseWriter, r *http.Request)
 	Get(w http.ResponseWriter, r *http.Request)
+	List(w http.ResponseWriter, r *http.Request)
 }
 
-func NewJournalController(cje interactors.CreateJournal, gje interactors.GetJournal) journalController {
+func NewJournalController(cje interactors.CreateJournal, gje interactors.GetJournal, lje interactors.ListJournals) journalController {
 	return journalController{
 		cje: cje,
 		gje: gje,
+		lje: lje,
 	}
 }
 
 type journalController struct {
 	cje interactors.CreateJournal
 	gje interactors.GetJournal
+	lje interactors.ListJournals
 }
 
 type CreateJournalRequest struct {
@@ -110,7 +114,32 @@ func (c journalController) Get(w http.ResponseWriter, r *http.Request) {
 		render.JSON(w, r, GetJournalResponse{Error: "something went wrong"})
 		return
 	}
-	render.JSON(w, r, JournalResponse{
+	render.JSON(w, r, buildJournalResponse(je))
+}
+
+type ListJournalResponse struct {
+	Error    string            `json:"error,omitempty"`
+	Journals []JournalResponse `json:"journals,omitempty"`
+}
+
+func (c journalController) List(w http.ResponseWriter, r *http.Request) {
+	jes, err := c.lje.Execute(r.Context())
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		render.JSON(w, r, GetJournalResponse{Error: "something went wrong"})
+		return
+	}
+	var result []JournalResponse
+	for _, je := range jes {
+		result = append(result, buildJournalResponse(je))
+	}
+	render.JSON(w, r, ListJournalResponse{
+		Journals: result,
+	})
+}
+
+func buildJournalResponse(je models.Journal) JournalResponse {
+	return JournalResponse{
 		UUID:          je.UUID,
 		Title:         je.Title,
 		Body:          je.Body,
@@ -118,5 +147,5 @@ func (c journalController) Get(w http.ResponseWriter, r *http.Request) {
 		CreatedByUUID: je.User.UUID,
 		CreatedAt:     je.CreatedAt,
 		UpdatedAt:     je.UpdatedAt,
-	})
+	}
 }

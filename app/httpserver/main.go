@@ -53,7 +53,9 @@ func main() {
 			journalController := controllers.NewJournalController(
 				interactors.NewCreateJournal(journalRepo),
 				interactors.NewGetJournal(journalRepo),
+				interactors.NewListJournals(journalRepo),
 			)
+			r.Get("/", journalController.List)
 			r.Post("/", journalController.Create)
 			r.Get("/{UUID}", journalController.Get)
 		})
