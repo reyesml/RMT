@@ -3,22 +3,29 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"github.com/google/uuid"
 	"github.com/reyesml/RMT/app/core/interactors"
 	"net/http"
+	"time"
 )
 
 type JournalController interface {
 	Create(w http.ResponseWriter, r *http.Request)
+	Get(w http.ResponseWriter, r *http.Request)
 }
 
-func NewJournalController(cje interactors.CreateJournal) journalController {
-	return journalController{cje: cje}
+func NewJournalController(cje interactors.CreateJournal, gje interactors.GetJournal) journalController {
+	return journalController{
+		cje: cje,
+		gje: gje,
+	}
 }
 
 type journalController struct {
 	cje interactors.CreateJournal
+	gje interactors.GetJournal
 }
 
 type CreateJournalRequest struct {
@@ -65,5 +72,51 @@ func (c journalController) Create(w http.ResponseWriter, r *http.Request) {
 
 	render.JSON(w, r, CreateJournalResponse{
 		UUID: je.UUID,
+	})
+}
+
+type JournalResponse struct {
+	UUID          uuid.UUID `json:"uuid"`
+	Title         string    `json:"title"`
+	Body          string    `json:"body"`
+	Mood          string    `json:"mood"`
+	CreatedByUUID uuid.UUID `json:"createdByUUID"`
+	CreatedAt     time.Time `json:"createdAt"`
+	UpdatedAt     time.Time `json:"updatedAt"`
+}
+
+type GetJournalResponse struct {
+	Error   string          `json:"error,omitempty"`
+	Journal JournalResponse `json:"journal,omitempty"`
+}
+
+func (c journalController) Get(w http.ResponseWriter, r *http.Request) {
+	reqUUIDParam := chi.URLParam(r, "UUID")
+	reqUUID, err := uuid.Parse(reqUUIDParam)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		render.JSON(w, r, GetJournalResponse{Error: "not found"})
+		return
+	}
+
+	je, err := c.gje.Execute(r.Context(), interactors.GetJournalRequest{UUID: reqUUID})
+	if errors.Is(err, interactors.ErrNotFound) {
+		w.WriteHeader(http.StatusNotFound)
+		render.JSON(w, r, GetJournalResponse{Error: "not found"})
+		return
+	}
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		render.JSON(w, r, GetJournalResponse{Error: "something went wrong"})
+		return
+	}
+	render.JSON(w, r, JournalResponse{
+		UUID:          je.UUID,
+		Title:         je.Title,
+		Body:          je.Body,
+		Mood:          je.Mood,
+		CreatedByUUID: je.User.UUID,
+		CreatedAt:     je.CreatedAt,
+		UpdatedAt:     je.UpdatedAt,
 	})
 }

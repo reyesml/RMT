@@ -2,12 +2,15 @@ package interactors
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/reyesml/RMT/app/core/database"
 	"github.com/reyesml/RMT/app/core/models"
 	"github.com/reyesml/RMT/app/core/repos"
 )
+
+var ErrNotFound = errors.New("not found")
 
 type GetJournalRequest struct {
 	UUID uuid.UUID
@@ -36,7 +39,10 @@ func (ia getJournal) Execute(ctx context.Context, req GetJournalRequest) (models
 		return models.Journal{}, database.SegmentMissingErr
 	}
 
-	je, err := ia.journalRepo.GetByUUID(req.UUID, user.SegmentUUID)
+	je, err := ia.journalRepo.GetByUUIDWithUser(req.UUID, user.SegmentUUID)
+	if errors.Is(err, repos.ErrNotFound) {
+		return models.Journal{}, ErrNotFound
+	}
 	if err != nil {
 		return models.Journal{}, fmt.Errorf("fetching journal: %w", err)
 	}

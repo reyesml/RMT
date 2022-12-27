@@ -49,9 +49,14 @@ func main() {
 	r.Group(func(r chi.Router) {
 		r.Use(rmtMiddleware.Authenticate(sessionRepo, cfg.Session.SigningSecret))
 
-		cje := interactors.NewCreateJournal(journalRepo)
-		journalController := controllers.NewJournalController(cje)
-		r.Post("/journal", journalController.Create)
+		r.Route("/journal", func(r chi.Router) {
+			journalController := controllers.NewJournalController(
+				interactors.NewCreateJournal(journalRepo),
+				interactors.NewGetJournal(journalRepo),
+			)
+			r.Post("/", journalController.Create)
+			r.Get("/{UUID}", journalController.Get)
+		})
 	})
 
 	http.ListenAndServe(fmt.Sprintf(":%v", cfg.Server.Port), r)
