@@ -66,7 +66,7 @@ func (c authController) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		authCookie := http.Cookie{
-			Name:     "access_token",
+			Name:     "session",
 			Value:    result.Token,
 			Path:     "/",
 			Expires:  result.Expiration,
