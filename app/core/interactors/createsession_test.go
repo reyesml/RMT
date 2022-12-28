@@ -39,6 +39,7 @@ func TestCreateSession_Execute(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, resp.Token)
 	require.GreaterOrEqual(t, resp.Expiration, time.Now().UTC())
+	require.Equal(t, user.UUID, resp.User.UUID)
 
 	//simulate a mismatch on signatures
 	_, err = models.GetSessionUUIDFromJWT(resp.Token, "wrong-secret")
