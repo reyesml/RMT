@@ -45,7 +45,7 @@ func Authenticate(sessionRepo repos.SessionRepo, signingSecret string) func(next
 }
 
 // getAuthToken attempts to retrieve the auth token from the Authorization header,
-// "Authorization: Bearer {token}". If the auth header is missing, the "access_token"
+// "Authorization: Bearer {token}". If the auth header is missing, the "session"
 // cookie will be used instead.
 func getAuthToken(r *http.Request) (string, error) {
 	authHeader := r.Header.Get("Authorization")
@@ -57,7 +57,7 @@ func getAuthToken(r *http.Request) (string, error) {
 		return splitToken[1], nil
 	}
 
-	authCookie, err := r.Cookie("access_token")
+	authCookie, err := r.Cookie("session")
 	if err != nil || len(authCookie.Value) == 0 {
 		return "", fmt.Errorf("auth not found")
 	}
