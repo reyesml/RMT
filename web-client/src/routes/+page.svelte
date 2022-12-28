@@ -9,7 +9,7 @@
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
 
-<section>
+<section class="text-purple-800">
 	<h1>
 		<span class="welcome">
 			<picture>
