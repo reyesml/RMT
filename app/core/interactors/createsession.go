@@ -17,6 +17,7 @@ type CreateSessionRequest struct {
 type CreateSessionResponse struct {
 	Token      string
 	Expiration time.Time
+	User       models.User
 }
 
 var BadCredErr = errors.New("invalid credentials")
@@ -61,5 +62,6 @@ func (ia createSession) Execute(ctx context.Context, req CreateSessionRequest) (
 	return CreateSessionResponse{
 		Token:      token,
 		Expiration: session.Expiration,
+		User:       user,
 	}, nil
 }

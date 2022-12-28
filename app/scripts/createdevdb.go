@@ -36,6 +36,7 @@ func main() {
 
 	fmt.Println("Creating Admin user...")
 	admin, err := models.NewUser("admin", "not_secure")
+	admin.Admin = true
 	if err != nil {
 		panic(err)
 	}
