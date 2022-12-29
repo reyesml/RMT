@@ -1,13 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { createSessionStore, getSessionStore } from '$lib/store/session';
+	import { createSessionStore } from '$lib/store/session';
 	import { goto } from '$app/navigation';
 
 	export let mandatory = true;
 
-	createSessionStore();
-
-	let session = getSessionStore();
+	let session = createSessionStore();
 
 	let saveSession = false;
 	$: if (saveSession && $session) {

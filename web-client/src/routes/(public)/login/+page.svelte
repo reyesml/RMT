@@ -22,7 +22,7 @@
 		<div class="w-full max-w-md space-y-8">
 			{#if $session && browser}
 				{goto('/home')}
-			{:else}
+			{:else if !form || !form.session}
 				<div>
 					<h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
 						Sign in to your account
