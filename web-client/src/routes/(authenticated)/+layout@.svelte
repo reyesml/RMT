@@ -1,6 +1,4 @@
 <script lang="ts">
-	import '../../app.postcss';
-	import '../styles.css';
 	import Session from '$lib/components/session.svelte';
 </script>
 

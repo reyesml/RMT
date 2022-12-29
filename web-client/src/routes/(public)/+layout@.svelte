@@ -1,7 +1,5 @@
 <script>
 	import Session from '$lib/components/session.svelte';
-	import '../../app.postcss';
-	import '../styles.css';
 </script>
 
 <Session mandatory={false}>
