@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { redirect } from '@sveltejs/kit';
 	import { getSessionStore } from '$lib/store/session';
 	import type { ActionData } from './$types';
 	import { browser } from '$app/environment';
