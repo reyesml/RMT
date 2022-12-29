@@ -79,6 +79,9 @@
 							Sign in
 						</button>
 					</div>
+					{#if form && !form.success}
+						<div class="w-full rounded-md bg-red-400 text-center p-2">Login failed.</div>
+					{/if}
 				</form>
 			{/if}
 		</div>
