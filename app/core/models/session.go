@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-const sessionDuration = 15 * time.Minute
+const sessionDuration = 10 * time.Hour
 
 type Session struct {
 	database.BaseModel
