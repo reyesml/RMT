@@ -2,11 +2,12 @@ package middleware
 
 import (
 	"fmt"
+	"net/http"
+	"strings"
+
 	"github.com/reyesml/RMT/app/core/models"
 	"github.com/reyesml/RMT/app/core/repos"
 	"github.com/reyesml/RMT/app/core/utils"
-	"net/http"
-	"strings"
 )
 
 // Authenticate returns a middleware handler. This handler extracts the auth token

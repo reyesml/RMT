@@ -24,7 +24,7 @@
 				{goto('/home')}
 			{:else if !form || !form.session}
 				<div>
-					<h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
+					<h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-white">
 						Sign in to your account
 					</h2>
 				</div>
@@ -37,7 +37,7 @@
 								name="username"
 								type="text"
 								required
-								class="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+								class="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-white placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
 								placeholder="Username"
 							/>
 						</div>
@@ -49,7 +49,7 @@
 								type="password"
 								autocomplete="current-password"
 								required
-								class="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+								class="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-white placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
 								placeholder="Password"
 							/>
 						</div>
