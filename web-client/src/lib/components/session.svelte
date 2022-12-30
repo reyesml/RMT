@@ -14,7 +14,6 @@
 	onMount(async () => {
 		let ses = window.sessionStorage.getItem('session');
 		if (ses) {
-			console.log('loading session...', ses);
 			$session = JSON.parse(ses);
 		} else if (mandatory) {
 			goto('/login');

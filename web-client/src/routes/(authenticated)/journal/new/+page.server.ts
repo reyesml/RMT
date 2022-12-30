@@ -7,7 +7,6 @@ export const actions: Actions = {
 		const mood = data.get('mood') ?? '';
 		const title = data.get('title');
 		const body = data.get('body');
-		console.log(mood, title, body);
 		if (!title || !body) {
 			return { success: false, error: 'title and body are required' };
 		}
@@ -17,7 +16,6 @@ export const actions: Actions = {
 		if (!res.ok) {
 			return { success: false, error: res.statusText };
 		}
-		console.log('woohoo');
 		throw redirect(307, '/journal');
 	}
 };
