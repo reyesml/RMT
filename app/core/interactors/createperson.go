@@ -34,9 +34,15 @@ func (ia createPerson) Execute(ctx context.Context, req CreatePersonRequest) (mo
 	if err != nil || user.SegmentUUID == uuid.Nil {
 		return models.Person{}, database.SegmentMissingErr
 	}
-	person := models.NewPerson(user.SegmentUUID, req.FirstName, req.LastName)
-	if err := ia.personRepo.Create(person); err != nil {
+	person := models.Person{
+		Segmented: database.Segmented{SegmentUUID: user.SegmentUUID},
+		FirstName: req.FirstName,
+		LastName:  req.LastName,
+		UserId:    user.ID,
+	}
+	//person := models.NewPerson(user.SegmentUUID, req.FirstName, req.LastName)
+	if err := ia.personRepo.Create(&person); err != nil {
 		return models.Person{}, fmt.Errorf("creating person: %w", err)
 	}
-	return *person, nil
+	return person, nil
 }

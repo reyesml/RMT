@@ -34,13 +34,38 @@ func TestListPeople_Execute(t *testing.T) {
 	require.NoError(t, err)
 
 	seg1people := []models.Person{
-		*models.NewPerson(seg1, "sam", "doe"),
-		*models.NewPerson(seg1, "chris", "cross"),
-		*models.NewPerson(seg1, "taylor", "smith"),
+		{
+			Segmented: database.Segmented{SegmentUUID: seg1},
+			FirstName: "sam",
+			LastName:  "doe",
+			UserId:    user.ID,
+		},
+		{
+			Segmented: database.Segmented{SegmentUUID: seg1},
+			FirstName: "chris",
+			LastName:  "cross",
+			UserId:    user.ID,
+		},
+		{
+			Segmented: database.Segmented{SegmentUUID: seg1},
+			FirstName: "taylor",
+			LastName:  "smith",
+			UserId:    user.ID,
+		},
 	}
 	seg2people := []models.Person{
-		*models.NewPerson(seg2, "jack", "frost"),
-		*models.NewPerson(seg2, "jill", "frost"),
+		{
+			Segmented: database.Segmented{SegmentUUID: seg2},
+			FirstName: "jack",
+			LastName:  "frost",
+			UserId:    user.ID,
+		},
+		{
+			Segmented: database.Segmented{SegmentUUID: seg2},
+			FirstName: "jill",
+			LastName:  "frost",
+			UserId:    user.ID,
+		},
 	}
 
 	require.NoError(t, personRepo.CreateMany(&seg1people))
