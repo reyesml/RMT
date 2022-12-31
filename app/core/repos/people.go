@@ -9,7 +9,7 @@ import (
 type PersonRepo interface {
 	Create(person *models.Person) error
 	CreateMany(people *[]models.Person) error
-	GetByUUID(uuid uuid.UUID) (models.Person, error)
+	GetByUUID(uuid uuid.UUID, segment uuid.UUID) (models.Person, error)
 	ListByUserId(uid uint) ([]models.Person, error)
 	ListBySegment(segment uuid.UUID) ([]models.Person, error)
 }
@@ -32,9 +32,9 @@ func (r personRepo) CreateMany(people *[]models.Person) error {
 	return result.Error
 }
 
-func (r personRepo) GetByUUID(uuid uuid.UUID) (models.Person, error) {
+func (r personRepo) GetByUUID(uuid uuid.UUID, segment uuid.UUID) (models.Person, error) {
 	var p models.Person
-	result := r.db.Where("UUID = ?", uuid).First(&p)
+	result := r.db.Where("UUID = ? and SEGMENT_UUID = ?", uuid, segment).First(&p)
 	return p, result.Error
 }
 

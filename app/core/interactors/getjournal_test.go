@@ -41,10 +41,13 @@ func TestGetJournal_Execute(t *testing.T) {
 	gje := NewGetJournal(journalRepo)
 	foundJournal, err := gje.Execute(ctx, GetJournalRequest{UUID: je.UUID})
 	require.NoError(t, err)
+	require.Equal(t, je.ID, foundJournal.ID)
 	require.Equal(t, je.UUID, foundJournal.UUID)
 	require.Equal(t, je.Mood, foundJournal.Mood)
 	require.Equal(t, je.Title, foundJournal.Title)
 	require.Equal(t, je.Body, foundJournal.Body)
+	require.Equal(t, user.ID, foundJournal.UserId)
+	require.Equal(t, user.SegmentUUID, foundJournal.SegmentUUID)
 
 	//attempt to fetch journal from different segment
 	user.SegmentUUID, err = uuid.NewRandom()
