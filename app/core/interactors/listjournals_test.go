@@ -67,6 +67,5 @@ func TestListJournals_Execute(t *testing.T) {
 	for i, je := range result {
 		require.Equal(t, user1Journals[i].UUID, je.UUID)
 		require.Equal(t, user.SegmentUUID, je.SegmentUUID)
-		require.NotEqual(t, uuid.Nil, je.User.UUID)
 	}
 }

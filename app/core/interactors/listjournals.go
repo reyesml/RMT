@@ -25,5 +25,5 @@ func (ia listJournals) Execute(ctx context.Context) ([]models.Journal, error) {
 		return []models.Journal{}, err
 	}
 
-	return ia.journalRepo.ListByUserIdWithUser(user.ID)
+	return ia.journalRepo.ListByUserId(user.ID)
 }

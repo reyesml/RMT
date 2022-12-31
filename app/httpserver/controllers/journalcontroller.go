@@ -84,7 +84,6 @@ type JournalResponse struct {
 	Title     string    `json:"title"`
 	Body      string    `json:"body"`
 	Mood      string    `json:"mood"`
-	UserUUID  uuid.UUID `json:"userUUID"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
@@ -144,7 +143,6 @@ func buildJournalResponse(je models.Journal) JournalResponse {
 		Title:     je.Title,
 		Body:      je.Body,
 		Mood:      je.Mood,
-		UserUUID:  je.User.UUID,
 		CreatedAt: je.CreatedAt,
 		UpdatedAt: je.UpdatedAt,
 	}

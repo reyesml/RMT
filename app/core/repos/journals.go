@@ -13,7 +13,7 @@ type JournalRepo interface {
 	Create(je *models.Journal) error
 	CreateMany(jes *[]models.Journal) error
 	GetByUUIDWithUser(uuid uuid.UUID, segment uuid.UUID) (models.Journal, error)
-	ListByUserIdWithUser(uid uint) ([]models.Journal, error)
+	ListByUserId(uid uint) ([]models.Journal, error)
 }
 
 func NewJournalRepo(db *gorm.DB) journalRepo {
@@ -43,8 +43,8 @@ func (r journalRepo) GetByUUIDWithUser(uuid uuid.UUID, segment uuid.UUID) (model
 	return je, result.Error
 }
 
-func (r journalRepo) ListByUserIdWithUser(uid uint) ([]models.Journal, error) {
+func (r journalRepo) ListByUserId(uid uint) ([]models.Journal, error) {
 	var jes []models.Journal
-	result := r.db.Preload("User").Where("user_id = ?", uid).Find(&jes)
+	result := r.db.Where("user_id = ?", uid).Find(&jes)
 	return jes, result.Error
 }
