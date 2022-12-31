@@ -15,6 +15,7 @@ type User struct {
 	PasswordHash  string
 	Admin         bool
 	Journals      []Journal
+	People        []Person
 }
 
 func NewUser(uname string, pass string) (*User, error) {

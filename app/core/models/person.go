@@ -9,4 +9,6 @@ type Person struct {
 	database.Segmented
 	FirstName string
 	LastName  string
+	UserId    uint
+	User      User
 }

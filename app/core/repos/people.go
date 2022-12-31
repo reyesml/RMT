@@ -10,6 +10,7 @@ type PersonRepo interface {
 	Create(person *models.Person) error
 	CreateMany(people *[]models.Person) error
 	GetByUUID(uuid uuid.UUID) (models.Person, error)
+	ListByUserId(uid uint) ([]models.Person, error)
 	ListBySegment(segment uuid.UUID) ([]models.Person, error)
 }
 
@@ -35,6 +36,12 @@ func (r personRepo) GetByUUID(uuid uuid.UUID) (models.Person, error) {
 	var p models.Person
 	result := r.db.Where("UUID = ?", uuid).First(&p)
 	return p, result.Error
+}
+
+func (r personRepo) ListByUserId(uid uint) ([]models.Person, error) {
+	var ppl []models.Person
+	result := r.db.Where("user_id = ?", uid).Find(&ppl)
+	return ppl, result.Error
 }
 
 func (r personRepo) ListBySegment(segment uuid.UUID) ([]models.Person, error) {
