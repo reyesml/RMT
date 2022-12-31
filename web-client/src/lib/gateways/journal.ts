@@ -11,3 +11,14 @@ export function create(auth: string, mood: string, title: string, body: string) 
 		body: JSON.stringify({ mood: mood, title: title, body: body })
 	});
 }
+
+export function list(auth: string) {
+	return fetch(`${host}/journal/`, {
+		method: 'GET',
+		cache: 'no-cache',
+		headers: {
+			'Content-Type': 'application/json',
+      'Authorization': `Bearer ${auth}`
+		}
+	});
+}

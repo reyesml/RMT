@@ -1,6 +1,9 @@
 <script lang="ts">
 	import PlusIcon from '$lib/components/icons/plus-icon.svelte';
 	import JournalList from './journal-list.svelte';
+	import type { PageData } from './$types';
+
+	export let data: PageData;
 </script>
 
 <svelte:head>
@@ -12,7 +15,11 @@
 	<div class="flex min-h-full items-center justify-center py-12 px-4">
 		<div class="w-full max-w-xl space-y-8">
 			<h1>Journal</h1>
-			<JournalList />
+			{#if data.error}
+				Something went wrong.
+			{:else if data.journals}
+				<JournalList journals={data.journals} />
+			{/if}
 		</div>
 	</div>
 	<a
