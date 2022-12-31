@@ -12,9 +12,7 @@
 	<div class="flex min-h-full items-center justify-center py-12 px-4">
 		<div class="w-full max-w-xl space-y-8">
 			{#if !form || !form.success}
-				<div>
-					<h1>New Journal</h1>
-				</div>
+				<h1>New Journal</h1>
 				<form action="?/create" method="POST">
 					<div>
 						<label for="title" class="sr-only">Title</label>
@@ -57,7 +55,11 @@
 							</select>
 						</div>
 						<div class="ml-auto">
-							<button type="submit" class="bg-green-700 w-44 p-2 rounded-md focus:z-10 focus:border-indigo-500 focus:ring-indigo-500">submit</button>
+							<button
+								type="submit"
+								class="bg-green-700 w-44 p-2 rounded-md focus:z-10 focus:border-indigo-500 focus:ring-indigo-500"
+								>submit</button
+							>
 						</div>
 					</div>
 				</form>
