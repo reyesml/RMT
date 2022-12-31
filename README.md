@@ -5,8 +5,8 @@
 The Relationship Management Tool (RMT) is designed to give the powers of CRM's to individuals.
 
 ## Key features:
-### Personal Journal (In progress)
+### Personal Journal
 Record your thoughts. Track your state of mind over time.
 
-### My People (Up next)
+### My People (In progress)
 Manage relationships like a pro.
