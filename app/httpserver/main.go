@@ -28,6 +28,7 @@ func main() {
 	userRepo := repos.NewUserRepo(db)
 	sessionRepo := repos.NewSessionRepo(db)
 	journalRepo := repos.NewJournalRepo(db)
+	personRepo := repos.NewPersonRepo(db)
 
 	//Setup interactors
 	createSession := interactors.NewCreateSession(userRepo, sessionRepo, cfg.Session.SigningSecret)
@@ -58,6 +59,17 @@ func main() {
 			r.Get("/", journalController.List)
 			r.Post("/", journalController.Create)
 			r.Get("/{UUID}", journalController.Get)
+		})
+
+		r.Route("/people", func(r chi.Router) {
+			personController := controllers.NewPersonController(
+				interactors.NewCreatePerson(personRepo),
+				interactors.NewGetPerson(personRepo),
+				interactors.NewListPeople(personRepo),
+			)
+			r.Get("/", personController.List)
+			r.Post("/", personController.Create)
+			r.Get("/{UUID}", personController.Get)
 		})
 	})
 
