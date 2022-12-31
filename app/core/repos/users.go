@@ -40,7 +40,7 @@ func (r userRepo) GetByUsername(uname string) (models.User, error) {
 
 func (r userRepo) FindByUsername(uname string) ([]models.User, error) {
 	var u []models.User
-	result := r.db.Where("Username = ?", uname).Find(&u)
+	result := r.db.Where("lower(Username) = ?", uname).Find(&u)
 	return u, result.Error
 }
 
