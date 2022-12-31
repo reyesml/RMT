@@ -22,3 +22,14 @@ export function list(auth: string) {
 		}
 	});
 }
+
+export function get(auth: string, uuid: string){
+	return fetch(`${host}/journal/${uuid}`, {
+		method: 'GET',
+		cache: 'no-cache',
+		headers: {
+			'Content-Type': 'application/json',
+      'Authorization': `Bearer ${auth}`
+		}
+	});
+}

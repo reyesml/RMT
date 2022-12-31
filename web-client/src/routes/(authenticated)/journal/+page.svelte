@@ -13,7 +13,7 @@
 
 <section class="relative">
 	<div class="flex min-h-full items-center justify-center py-12 px-4">
-		<div class="w-full max-w-xl space-y-8">
+		<div class="w-full max-w-xl">
 			<h1>Journal</h1>
 			{#if data.error}
 				Something went wrong.

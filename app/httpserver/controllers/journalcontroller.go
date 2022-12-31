@@ -114,7 +114,7 @@ func (c journalController) Get(w http.ResponseWriter, r *http.Request) {
 		render.JSON(w, r, GetJournalResponse{Error: "something went wrong"})
 		return
 	}
-	render.JSON(w, r, buildJournalResponse(je))
+	render.JSON(w, r, GetJournalResponse{Journal: buildJournalResponse(je)})
 }
 
 type ListJournalResponse struct {
