@@ -8,7 +8,7 @@
 			<slot />
 		</main>
 
-		<footer class="fixed inset-x-0 bottom-0 p-4 bg-[#242424] bg-opacity-90">
+		<footer class="fixed inset-x-0 bottom-0 p-4 bg-gradient-to-t from-slate-900 to-transparent">
 			<div class="flex flex-col items-center">
 				<div class="flex flex-row items-center">
 					<a href="/journal" class="bg-purple-700 rounded-md text-white w-32 py-1 mx-1 text-center"
