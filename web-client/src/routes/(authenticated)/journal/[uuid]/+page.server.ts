@@ -9,7 +9,6 @@ export const load = (async ({ cookies, params }) => {
 	}
 
 	const body = await res.json();
-    console.log('body...', body)
 	return {
 		journal: body.journal
 	};

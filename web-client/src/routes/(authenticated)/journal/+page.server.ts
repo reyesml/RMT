@@ -8,7 +8,6 @@ export const load = (async ({ cookies }) => {
 		return { error: res.statusText };
 	}
 	const body = await res.json();
-  console.log(body)
 	return {
 		journals: body.journals
 	};
