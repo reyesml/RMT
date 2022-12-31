@@ -15,9 +15,10 @@
 			<JournalList />
 		</div>
 	</div>
-	<a href="/journal/new" class="fixed bottom-20 left-64 text-white">
-		<div class="bg-purple-700 rounded-full w-14 h-14 flex items-center justify-center">
-			<PlusIcon class="h-8 w-8" />
-		</div>
+	<a
+		href="/journal/new"
+		class="fixed bottom-20 left-64 text-white bg-purple-700 rounded-full w-14 h-14 flex items-center justify-center"
+	>
+		<PlusIcon class="h-8 w-8" />
 	</a>
 </section>
