@@ -25,14 +25,14 @@
 							class="relative block w-full appearance-none rounded-3xl bg-black bg-opacity-20 px-8 py-4 text-white focus:z-10 border border-transparent focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 text-xl font-bold"
 						/>
 					</div>
-					<div class="mt-3 bg-black bg-opacity-20 rounded-3xl px-8 py-6 border border-transparent focus-within:z-10 focus-within:border-indigo-500 focus-within:outline-none focus-within:ring-indigo-500">
+					<div class="mt-3 bg-black bg-opacity-20 rounded-3xl border border-transparent focus-within:z-10 focus-within:border-indigo-500 focus-within:outline-none focus-within:ring-indigo-500">
 						<label for="body" class="sr-only">Body</label>
 						<textarea
 							id="body"
 							name="body"
 							placeholder="Dear diary..."
 							required
-							class="bg-transparent relative block w-full min-h-[300px] appearance-none rounded-md text-white inherit focus:outline-none"
+							class="bg-transparent relative block w-full px-8 mt-3 pb-3 min-h-[300px] appearance-none rounded-md text-white inherit focus:outline-none"
 						/>
 					</div>
 					<div class="mt-3 flex">
