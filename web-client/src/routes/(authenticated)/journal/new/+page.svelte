@@ -22,17 +22,17 @@
 							type="text"
 							required
 							placeholder="title"
-							class="relative block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-white focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+							class="relative block w-full appearance-none rounded-3xl bg-black bg-opacity-20 px-8 py-4 text-white focus:z-10 border border-transparent focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 text-xl font-bold"
 						/>
 					</div>
-					<div class="mt-3">
+					<div class="mt-3 bg-black bg-opacity-20 rounded-3xl px-8 py-6 border border-transparent focus-within:z-10 focus-within:border-indigo-500 focus-within:outline-none focus-within:ring-indigo-500">
 						<label for="body" class="sr-only">Body</label>
 						<textarea
 							id="body"
 							name="body"
 							placeholder="Dear diary..."
 							required
-							class="relative block w-full h-52 appearance-none rounded-md border border-gray-300 px-3 py-2 text-white focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+							class="bg-transparent relative block w-full min-h-[300px] appearance-none rounded-md text-white inherit focus:outline-none"
 						/>
 					</div>
 					<div class="mt-3 flex">
@@ -41,7 +41,8 @@
 							<select
 								id="mood"
 								name="mood"
-								class="relative block w-44 appearance-none rounded-md border border-gray-300 px-3 py-2 text-white focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+								required
+								class="relative bg-black bg-opacity-20 text-center block w-44 appearance-none rounded-3xl px-3 py-2 border border-transparent focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
 							>
 								<option value="" disabled selected>Mood</option>
 								<option value="happy">happy</option>
@@ -57,7 +58,7 @@
 						<div class="ml-auto">
 							<button
 								type="submit"
-								class="bg-green-700 w-44 p-2 rounded-md focus:z-10 focus:border-indigo-500 focus:ring-indigo-500"
+								class="bg-green-600 w-44 p-2 rounded-xl font-bold border border-transparent focus:z-10 focus:border-indigo-500 focus:ring-indigo-500"
 								>submit</button
 							>
 						</div>
