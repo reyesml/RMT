@@ -15,4 +15,5 @@ type PersonQuality struct {
 	DeletedAt gorm.DeletedAt
 	UserId    uint
 	User      User
+	Notes     []Note
 }
