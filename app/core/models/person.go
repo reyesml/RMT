@@ -12,4 +12,5 @@ type Person struct {
 	UserId    uint
 	User      User
 	Qualities []Quality `gorm:"many2many:person_qualities;"`
+	Notes     []Note
 }

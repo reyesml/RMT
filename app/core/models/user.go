@@ -16,6 +16,7 @@ type User struct {
 	Admin         bool
 	Journals      []Journal
 	People        []Person
+	Notes         []Note
 }
 
 func NewUser(uname string, pass string) (*User, error) {
