@@ -28,7 +28,7 @@ func TestAddQualityToPerson_Execute(t *testing.T) {
 	userRepo := repos.NewUserRepo(db)
 	require.NoError(t, userRepo.Create(user))
 
-	personRepo := repos.NewPersonRepo(db)
+	pr := repos.NewPersonRepo(db)
 	people := []models.Person{
 		{
 			Segmented: database.Segmented{SegmentUUID: user.SegmentUUID},
@@ -49,11 +49,11 @@ func TestAddQualityToPerson_Execute(t *testing.T) {
 			UserId:    user.ID,
 		},
 	}
-	require.NoError(t, personRepo.CreateMany(&people))
+	require.NoError(t, pr.CreateMany(&people))
 
 	qr := repos.NewQualityRepo(db)
 	pqr := repos.NewPersonQualityRepo(db)
-	aqtp := NewAddQualityToPerson(personRepo, qr, pqr)
+	aqtp := NewAddQualityToPerson(pr, qr, pqr)
 	ctx := utils.SetCurrentUser(context.Background(), *user, uuid.Nil)
 	cpqr := AddQualityToPersonRequest{
 		PersonUUID:  people[0].UUID,
