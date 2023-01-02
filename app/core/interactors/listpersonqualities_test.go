@@ -53,12 +53,12 @@ func TestListPersonQualities_Execute(t *testing.T) {
 
 	qr := repos.NewQualityRepo(db)
 	pqr := repos.NewPersonQualityRepo(db)
-	aqtp := NewAddQualityToPerson(personRepo, qr, pqr)
+	aqtp := NewCreatePersonQuality(personRepo, qr, pqr)
 	ctx := utils.SetCurrentUser(context.Background(), *user, uuid.Nil)
 
 	//add some qualities to the first person in our list.
 	for i := 0; i < 5; i++ {
-		cpqr := AddQualityToPersonRequest{
+		cpqr := CreatePersonQualityRequest{
 			PersonUUID:  people[0].UUID,
 			QualityName: fmt.Sprintf("quality-%d", i),
 		}

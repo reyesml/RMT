@@ -12,8 +12,8 @@ import (
 	"testing"
 )
 
-func TestAddNoteToPersonQuality_Execute(t *testing.T) {
-	testDBId := "TestAddNoteToPersonQuality.db"
+func TestCreatePersonQualityNote_Execute(t *testing.T) {
+	testDBId := "TestCreatePersonQualityNote.db"
 	db, err := database.Connect(testDBId)
 	defer os.Remove(testDBId)
 
@@ -38,9 +38,9 @@ func TestAddNoteToPersonQuality_Execute(t *testing.T) {
 
 	qr := repos.NewQualityRepo(db)
 	pqr := repos.NewPersonQualityRepo(db)
-	aqtp := NewAddQualityToPerson(personRepo, qr, pqr)
+	aqtp := NewCreatePersonQuality(personRepo, qr, pqr)
 	ctx := utils.SetCurrentUser(context.Background(), *user, uuid.Nil)
-	cpqr := AddQualityToPersonRequest{
+	cpqr := CreatePersonQualityRequest{
 		PersonUUID:  person.UUID,
 		QualityName: "Loves Writing Tests",
 	}
