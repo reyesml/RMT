@@ -40,7 +40,7 @@ func TestGetPersonQuality_Execute(t *testing.T) {
 	pqr := repos.NewPersonQualityRepo(db)
 	nr := repos.NewNoteRepo(db)
 	aqtp := NewAddQualityToPerson(personRepo, qr, pqr)
-	antpq := NewAddNoteToPersonQuality(pqr, nr)
+	antpq := NewCreatePersonQualityNote(pqr, nr)
 	ctx := utils.SetCurrentUser(context.Background(), *user, uuid.Nil)
 
 	//add a quality with a note to our test person
@@ -51,7 +51,7 @@ func TestGetPersonQuality_Execute(t *testing.T) {
 	pq, err := aqtp.Execute(ctx, cpqr)
 	require.NoError(t, err)
 
-	pn, err := antpq.Execute(ctx, AddNoteToPersonQualityRequest{
+	pn, err := antpq.Execute(ctx, CreatePersonQualityNoteRequest{
 		PersonQualityUUID: pq.UUID,
 		NoteTitle:         "quality note title",
 		NoteBody:          "note body",

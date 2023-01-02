@@ -48,13 +48,13 @@ func TestAddNoteToPersonQuality_Execute(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEqual(t, uuid.Nil, pq.UUID)
 
-	antpqr := AddNoteToPersonQualityRequest{
+	antpqr := CreatePersonQualityNoteRequest{
 		PersonQualityUUID: pq.UUID,
 		NoteTitle:         "They insist on testing every interactor",
 		NoteBody:          "...but mostly only the happy paths (:",
 	}
 	nr := repos.NewNoteRepo(db)
-	antpq := NewAddNoteToPersonQuality(pqr, nr)
+	antpq := NewCreatePersonQualityNote(pqr, nr)
 	n, err := antpq.Execute(ctx, antpqr)
 	require.NoError(t, err)
 	require.NotEqual(t, uuid.Nil, n.UUID)
