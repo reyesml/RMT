@@ -72,6 +72,7 @@ func TestListPersonQualities_Execute(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.Equal(t, 5, len(pqs))
+	require.NotEqual(t, 0, len(pqs[0].Quality.Name))
 
 	pqs, err = lpqs.Execute(ctx, ListPersonQualitiesRequest{
 		PersonUUID: people[1].UUID,
