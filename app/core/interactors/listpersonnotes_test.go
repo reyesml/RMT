@@ -57,12 +57,12 @@ func TestListPersonNotes_Execute(t *testing.T) {
 	_, err = antpq.Execute(ctx, antpqr)
 	require.NoError(t, err)
 
-	antpr := AddNoteToPersonRequest{
+	antpr := CreatePersonNoteRequest{
 		PersonUUID: person.UUID,
 		NoteTitle:  "They spent most of their holiday working on a CRM",
 		NoteBody:   "IDK what to put as the body.",
 	}
-	antp := NewAddNoteToPerson(pr, nr)
+	antp := NewCreatePersonNote(pr, nr)
 	pn, err := antp.Execute(ctx, antpr)
 	require.NoError(t, err)
 

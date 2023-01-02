@@ -9,29 +9,29 @@ import (
 	"github.com/reyesml/RMT/app/core/utils"
 )
 
-type AddNoteToPersonRequest struct {
+type CreatePersonNoteRequest struct {
 	PersonUUID uuid.UUID
 	NoteTitle  string
 	NoteBody   string
 }
 
-type AddNoteToPerson interface {
-	Execute(ctx context.Context, req AddNoteToPersonRequest) (models.Note, error)
+type CreatePersonNote interface {
+	Execute(ctx context.Context, req CreatePersonNoteRequest) (models.Note, error)
 }
 
-func NewAddNoteToPerson(pr repos.PersonRepo, nr repos.NoteRepo) addNoteToPerson {
-	return addNoteToPerson{
+func NewCreatePersonNote(pr repos.PersonRepo, nr repos.NoteRepo) createPersonNote {
+	return createPersonNote{
 		pr: pr,
 		nr: nr,
 	}
 }
 
-type addNoteToPerson struct {
+type createPersonNote struct {
 	pr repos.PersonRepo
 	nr repos.NoteRepo
 }
 
-func (ia addNoteToPerson) Execute(ctx context.Context, req AddNoteToPersonRequest) (models.Note, error) {
+func (ia createPersonNote) Execute(ctx context.Context, req CreatePersonNoteRequest) (models.Note, error) {
 	user, err := utils.GetCurrentUser(ctx)
 	if err != nil || user.SegmentUUID == uuid.Nil {
 		return models.Note{}, database.SegmentMissingErr

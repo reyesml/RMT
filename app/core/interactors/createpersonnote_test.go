@@ -37,9 +37,9 @@ func TestAddNoteToPerson_Execute(t *testing.T) {
 	require.NoError(t, pr.Create(&person))
 
 	nr := repos.NewNoteRepo(db)
-	antp := NewAddNoteToPerson(pr, nr)
+	antp := NewCreatePersonNote(pr, nr)
 	ctx := utils.SetCurrentUser(context.Background(), *user, uuid.Nil)
-	antpr := AddNoteToPersonRequest{
+	antpr := CreatePersonNoteRequest{
 		PersonUUID: person.UUID,
 		NoteTitle:  "They spent most of their holiday working on a CRM",
 		NoteBody:   "IDK what to put as the body.",
