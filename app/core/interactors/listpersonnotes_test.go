@@ -47,13 +47,13 @@ func TestListPersonNotes_Execute(t *testing.T) {
 	pq, err := aqtp.Execute(ctx, cpqr)
 	require.NoError(t, err)
 
-	antpqr := AddNoteToPersonQualityRequest{
+	antpqr := CreatePersonQualityNoteRequest{
 		PersonQualityUUID: pq.UUID,
 		NoteTitle:         "They insist on testing every interactor",
 		NoteBody:          "...but mostly only the happy paths (:",
 	}
 	nr := repos.NewNoteRepo(db)
-	antpq := NewAddNoteToPersonQuality(pqr, nr)
+	antpq := NewCreatePersonQualityNote(pqr, nr)
 	_, err = antpq.Execute(ctx, antpqr)
 	require.NoError(t, err)
 

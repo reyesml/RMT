@@ -10,31 +10,31 @@ import (
 	"github.com/reyesml/RMT/app/core/utils"
 )
 
-type AddNoteToPersonQualityRequest struct {
+type CreatePersonQualityNoteRequest struct {
 	PersonQualityUUID uuid.UUID
 	NoteTitle         string
 	NoteBody          string
 }
 
-type AddNoteToPersonQuality interface {
-	Execute(ctx context.Context, req AddNoteToPersonQuality) (models.Note, error)
+type CreatePersonQualityNote interface {
+	Execute(ctx context.Context, req CreatePersonQualityNoteRequest) (models.Note, error)
 }
 
-func NewAddNoteToPersonQuality(pqr repos.PersonQualityRepo, nr repos.NoteRepo) addNoteToPersonQuality {
-	return addNoteToPersonQuality{
+func NewCreatePersonQualityNote(pqr repos.PersonQualityRepo, nr repos.NoteRepo) createPersonQualityNote {
+	return createPersonQualityNote{
 		pqr: pqr,
 		nr:  nr,
 	}
 }
 
-type addNoteToPersonQuality struct {
+type createPersonQualityNote struct {
 	pqr repos.PersonQualityRepo
 	nr  repos.NoteRepo
 }
 
 var MissingNoteTitleErr = errors.New("note title is required")
 
-func (ia addNoteToPersonQuality) Execute(ctx context.Context, req AddNoteToPersonQualityRequest) (models.Note, error) {
+func (ia createPersonQualityNote) Execute(ctx context.Context, req CreatePersonQualityNoteRequest) (models.Note, error) {
 	user, err := utils.GetCurrentUser(ctx)
 	if err != nil || user.SegmentUUID == uuid.Nil {
 		return models.Note{}, database.SegmentMissingErr
