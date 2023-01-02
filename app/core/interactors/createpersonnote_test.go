@@ -12,8 +12,8 @@ import (
 	"testing"
 )
 
-func TestAddNoteToPerson_Execute(t *testing.T) {
-	testDBId := "TestAddNoteToPerson.db"
+func TestCreatePersonNote_Execute(t *testing.T) {
+	testDBId := "TestCreatePersonNote.db"
 	db, err := database.Connect(testDBId)
 	defer os.Remove(testDBId)
 

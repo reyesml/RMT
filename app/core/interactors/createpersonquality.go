@@ -10,26 +10,26 @@ import (
 	"github.com/reyesml/RMT/app/core/utils"
 )
 
-type AddQualityToPersonRequest struct {
+type CreatePersonQualityRequest struct {
 	PersonUUID  uuid.UUID
 	QualityName string
 }
 
 var MissingQualityNameErr = errors.New("QualityName is required")
 
-type AddQualityToPerson interface {
-	Execute(ctx context.Context, req AddQualityToPersonRequest) (models.PersonQuality, error)
+type CreatePersonQuality interface {
+	Execute(ctx context.Context, req CreatePersonQualityRequest) (models.PersonQuality, error)
 }
 
-func NewAddQualityToPerson(pr repos.PersonRepo, qr repos.QualityRepo, pqr repos.PersonQualityRepo) addQualityToPerson {
-	return addQualityToPerson{
+func NewCreatePersonQuality(pr repos.PersonRepo, qr repos.QualityRepo, pqr repos.PersonQualityRepo) createPersonQuality {
+	return createPersonQuality{
 		pr:  pr,
 		qr:  qr,
 		pqr: pqr,
 	}
 }
 
-type addQualityToPerson struct {
+type createPersonQuality struct {
 	pr  repos.PersonRepo
 	qr  repos.QualityRepo
 	pqr repos.PersonQualityRepo
@@ -39,7 +39,7 @@ type addQualityToPerson struct {
 // the current user.  It then checks to see if the quality exists,
 // and creates the quality if it doesn't exist. It then assigns the
 // quality to the person.
-func (ia addQualityToPerson) Execute(ctx context.Context, req AddQualityToPersonRequest) (models.PersonQuality, error) {
+func (ia createPersonQuality) Execute(ctx context.Context, req CreatePersonQualityRequest) (models.PersonQuality, error) {
 	user, err := utils.GetCurrentUser(ctx)
 	if err != nil || user.SegmentUUID == uuid.Nil {
 		return models.PersonQuality{}, database.SegmentMissingErr

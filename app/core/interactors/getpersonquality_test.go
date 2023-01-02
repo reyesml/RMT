@@ -39,12 +39,12 @@ func TestGetPersonQuality_Execute(t *testing.T) {
 	qr := repos.NewQualityRepo(db)
 	pqr := repos.NewPersonQualityRepo(db)
 	nr := repos.NewNoteRepo(db)
-	aqtp := NewAddQualityToPerson(personRepo, qr, pqr)
+	aqtp := NewCreatePersonQuality(personRepo, qr, pqr)
 	antpq := NewCreatePersonQualityNote(pqr, nr)
 	ctx := utils.SetCurrentUser(context.Background(), *user, uuid.Nil)
 
 	//add a quality with a note to our test person
-	cpqr := AddQualityToPersonRequest{
+	cpqr := CreatePersonQualityRequest{
 		PersonUUID:  person.UUID,
 		QualityName: "some-quality",
 	}

@@ -13,8 +13,8 @@ import (
 	"testing"
 )
 
-func TestAddQualityToPerson_Execute(t *testing.T) {
-	testDBId := "TestAddQualityToPerson.db"
+func TestCreatePersonQuality_Execute(t *testing.T) {
+	testDBId := "TestCreatePersonQuality.db"
 	db, err := database.Connect(testDBId)
 	defer os.Remove(testDBId)
 
@@ -53,9 +53,9 @@ func TestAddQualityToPerson_Execute(t *testing.T) {
 
 	qr := repos.NewQualityRepo(db)
 	pqr := repos.NewPersonQualityRepo(db)
-	aqtp := NewAddQualityToPerson(pr, qr, pqr)
+	aqtp := NewCreatePersonQuality(pr, qr, pqr)
 	ctx := utils.SetCurrentUser(context.Background(), *user, uuid.Nil)
-	cpqr := AddQualityToPersonRequest{
+	cpqr := CreatePersonQualityRequest{
 		PersonUUID:  people[0].UUID,
 		QualityName: "Loves Writing Tests",
 	}
@@ -73,7 +73,7 @@ func TestAddQualityToPerson_Execute(t *testing.T) {
 	require.Equal(t, cpqr.QualityName, q.Name)
 	require.Equal(t, strings.ToLower(cpqr.QualityName), q.NameLower)
 
-	cpqr2 := AddQualityToPersonRequest{
+	cpqr2 := CreatePersonQualityRequest{
 		PersonUUID:  people[1].UUID,
 		QualityName: "LOVES WRITING TESTS",
 	}
@@ -89,7 +89,7 @@ func TestAddQualityToPerson_Execute(t *testing.T) {
 	// so the existing quality should have been used.
 	require.Equal(t, q.ID, pq2.QualityId)
 
-	cpqr3 := AddQualityToPersonRequest{
+	cpqr3 := CreatePersonQualityRequest{
 		PersonUUID:  people[1].UUID,
 		QualityName: "Hates writing tests",
 	}
