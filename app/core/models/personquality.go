@@ -9,6 +9,7 @@ type PersonQuality struct {
 	database.Segmented
 	PersonId  uint
 	QualityId uint
+	Quality   Quality
 	UserId    uint
 	User      User
 	Notes     []Note

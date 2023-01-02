@@ -33,12 +33,12 @@ func (r personQualityRepo) CreateMany(pqs *[]models.PersonQuality) error {
 
 func (r personQualityRepo) GetByUUID(uuid uuid.UUID, segment uuid.UUID) (models.PersonQuality, error) {
 	var pq models.PersonQuality
-	result := r.db.Where("UUID = ? AND SEGMENT_UUID = ?", uuid, segment).First(&pq)
+	result := r.db.Preload("Quality").Where("UUID = ? AND SEGMENT_UUID = ?", uuid, segment).First(&pq)
 	return pq, result.Error
 }
 
 func (r personQualityRepo) ListByPerson(pid uint) ([]models.PersonQuality, error) {
 	var pqs []models.PersonQuality
-	result := r.db.Where("person_id = ?", pid).Find(&pqs)
+	result := r.db.Preload("Quality").Where("person_id = ?", pid).Find(&pqs)
 	return pqs, result.Error
 }
