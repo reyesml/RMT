@@ -10,6 +10,9 @@ var AllModels = []interface{}{
 	&models.Session{},
 	&models.Person{},
 	&models.Journal{},
+	&models.Quality{},
+	&models.Note{},
+	&models.PersonQuality{},
 }
 
 // MigrateAllModels runs all pending database
