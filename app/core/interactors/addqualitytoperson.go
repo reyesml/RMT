@@ -15,7 +15,7 @@ type AddQualityToPersonRequest struct {
 	QualityName string
 }
 
-var MissingQualityName = errors.New("QualityName is required")
+var MissingQualityNameErr = errors.New("QualityName is required")
 
 type AddQualityToPerson interface {
 	Execute(ctx context.Context, req AddQualityToPersonRequest) (models.PersonQuality, error)
@@ -46,7 +46,7 @@ func (ia addQualityToPerson) Execute(ctx context.Context, req AddQualityToPerson
 	}
 
 	if len(req.QualityName) == 0 {
-		return models.PersonQuality{}, MissingQualityName
+		return models.PersonQuality{}, MissingQualityNameErr
 	}
 
 	// Find our person
