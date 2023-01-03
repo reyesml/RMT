@@ -148,7 +148,7 @@ func (c personController) List(w http.ResponseWriter, r *http.Request) {
 		render.JSON(w, r, GetPersonResponse{Error: "something went wrong"})
 		return
 	}
-	var result []Person
+	result := make([]Person, 0)
 	for _, p := range ppl {
 		result = append(result, mapPerson(p))
 	}
