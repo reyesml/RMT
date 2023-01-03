@@ -31,11 +31,11 @@
 				<h1 class="text-4xl break-words">{`${person.firstName} ${person.lastName}`.trim()}</h1>
 				<div class="mt-6">
                     <QualityList {qualities} />
-                    <div>Add Quality (TODO)</div>
+                    <!-- <div>Add Quality (TODO)</div> -->
                 </div>
 				<div class="mt-6">
                     <NoteList notes={notes} />
-                    <div>Add Note (TODO)</div>
+                    <!-- <div>Add Note (TODO)</div> -->
                 </div>
 			{/if}
 		</div>
