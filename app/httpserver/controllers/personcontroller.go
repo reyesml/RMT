@@ -17,15 +17,27 @@ type PersonController interface {
 	Get(w http.ResponseWriter, r *http.Request)
 	CreatePersonQuality(w http.ResponseWriter, r *http.Request)
 	ListPersonQualities(w http.ResponseWriter, r *http.Request)
+	CreateNote(w http.ResponseWriter, r *http.Request)
+	ListNotes(w http.ResponseWriter, r *http.Request)
 	List(w http.ResponseWriter, r *http.Request)
 }
 
-func NewPersonController(cp interactors.CreatePerson, gp interactors.GetPerson, cpq interactors.CreatePersonQuality, lpq interactors.ListPersonQualities, lp interactors.ListPeople) personController {
+func NewPersonController(
+	cp interactors.CreatePerson,
+	gp interactors.GetPerson,
+	cpq interactors.CreatePersonQuality,
+	lpq interactors.ListPersonQualities,
+	cpn interactors.CreatePersonNote,
+	lpn interactors.ListPersonNotes,
+	lp interactors.ListPeople,
+) personController {
 	return personController{
 		cp:  cp,
 		gp:  gp,
 		cpq: cpq,
 		lpq: lpq,
+		cpn: cpn,
+		lpn: lpn,
 		lp:  lp,
 	}
 }
@@ -36,6 +48,8 @@ type personController struct {
 	cpq interactors.CreatePersonQuality
 	lpq interactors.ListPersonQualities
 	lp  interactors.ListPeople
+	cpn interactors.CreatePersonNote
+	lpn interactors.ListPersonNotes
 }
 
 type CreatePersonRequest struct {
@@ -178,6 +192,84 @@ func (c personController) ListPersonQualities(w http.ResponseWriter, r *http.Req
 		pql = append(pql, mapPersonQuality(pq))
 	}
 	render.JSON(w, r, ListPersonQualityResponse{PersonQualities: pql})
+}
+
+type CreatePersonNoteRequest struct {
+	Title string `json:"title"`
+	Body  string `json:"body"`
+}
+
+type CreatePersonNoteResonse struct {
+	Error string    `json:"error,omitempty"`
+	UUID  uuid.UUID `json:"uuid"`
+}
+
+func (c personController) CreateNote(w http.ResponseWriter, r *http.Request) {
+	reqUUIDParam := chi.URLParam(r, "UUID")
+	reqUUID, err := uuid.Parse(reqUUIDParam)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		render.JSON(w, r, CreatePersonNoteResonse{Error: "not found"})
+		return
+	}
+	var req CreatePersonNoteRequest
+	if err = json.NewDecoder(r.Body).Decode(&req); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		render.JSON(w, r, CreatePersonNoteResonse{Error: "invalid body format"})
+		return
+	}
+
+	n, err := c.cpn.Execute(r.Context(), interactors.CreatePersonNoteRequest{
+		PersonUUID: reqUUID,
+		NoteTitle:  req.Title,
+		NoteBody:   req.Body,
+	})
+	if errors.Is(err, interactors.ErrNotFound) {
+		w.WriteHeader(http.StatusNotFound)
+		render.JSON(w, r, CreatePersonNoteResonse{Error: "not found"})
+		return
+	}
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		render.JSON(w, r, CreatePersonNoteResonse{Error: "something went wrong"})
+		return
+	}
+	render.JSON(w, r, CreatePersonNoteResonse{UUID: n.UUID})
+}
+
+type ListPersonNotesResponse struct {
+	Error string `json:"error,omitempty"`
+	Notes []Note `json:"notes"`
+}
+
+func (c personController) ListNotes(w http.ResponseWriter, r *http.Request) {
+	reqUUIDParam := chi.URLParam(r, "UUID")
+	reqUUID, err := uuid.Parse(reqUUIDParam)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		render.JSON(w, r, ListPersonNotesResponse{Error: "not found"})
+		return
+	}
+
+	ns, err := c.lpn.Execute(r.Context(), interactors.ListPersonNotesRequest{
+		PersonUUID: reqUUID,
+		Filter:     interactors.OnlyPersonNotesFilter,
+	})
+	if errors.Is(err, interactors.ErrNotFound) {
+		w.WriteHeader(http.StatusNotFound)
+		render.JSON(w, r, ListPersonNotesResponse{Error: "not found"})
+		return
+	}
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		render.JSON(w, r, ListPersonNotesResponse{Error: "something went wrong"})
+		return
+	}
+	var result = make([]Note, 0)
+	for _, n := range ns {
+		result = append(result, mapNote(n, reqUUID, n.PersonQuality.UUID))
+	}
+	render.JSON(w, r, ListPersonNotesResponse{Notes: result})
 }
 
 type ListPersonResponse struct {

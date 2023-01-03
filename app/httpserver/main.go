@@ -31,6 +31,7 @@ func main() {
 	personRepo := repos.NewPersonRepo(db)
 	personQualityRepo := repos.NewPersonQualityRepo(db)
 	qualityRepo := repos.NewQualityRepo(db)
+	noteRepo := repos.NewNoteRepo(db)
 
 	//Setup interactors
 	createSession := interactors.NewCreateSession(userRepo, sessionRepo, cfg.Session.SigningSecret)
@@ -69,6 +70,8 @@ func main() {
 				interactors.NewGetPerson(personRepo),
 				interactors.NewCreatePersonQuality(personRepo, qualityRepo, personQualityRepo),
 				interactors.NewListPersonQualities(personRepo, personQualityRepo),
+				interactors.NewCreatePersonNote(personRepo, noteRepo),
+				interactors.NewListPersonNotes(personRepo, noteRepo),
 				interactors.NewListPeople(personRepo),
 			)
 			r.Get("/", personController.List)
@@ -76,13 +79,17 @@ func main() {
 			r.Get("/{UUID}", personController.Get)
 			r.Get("/{UUID}/qualities", personController.ListPersonQualities)
 			r.Post("/{UUID}/qualities", personController.CreatePersonQuality)
+			r.Get("/{UUID}/notes", personController.ListNotes)
+			r.Post("/{UUID}/notes", personController.CreateNote)
 		})
 
 		r.Route("/person-quality", func(r chi.Router) {
 			personQualityController := controllers.NewPersonQualityController(
 				interactors.NewGetPersonQuality(personQualityRepo),
+				interactors.NewCreatePersonQualityNote(personQualityRepo, noteRepo),
 			)
 			r.Get("/{UUID}", personQualityController.Get)
+			r.Post("/{UUID}/notes", personQualityController.CreateNote)
 			//Delete
 			//Edit
 		})

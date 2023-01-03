@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"encoding/json"
+	"errors"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"github.com/google/uuid"
@@ -11,18 +13,21 @@ import (
 )
 
 type PersonQualityController interface {
-	Create(w http.ResponseWriter, r *http.Request)
 	Get(w http.ResponseWriter, r *http.Request)
+	CreateNote(w http.ResponseWriter, r *http.Request)
+	ListNotes(w http.ResponseWriter, r *http.Request)
 }
 
-func NewPersonQualityController(gpq interactors.GetPersonQuality) personQualityController {
+func NewPersonQualityController(gpq interactors.GetPersonQuality, cpqn interactors.CreatePersonQualityNote) personQualityController {
 	return personQualityController{
-		gpq: gpq,
+		gpq:  gpq,
+		cpqn: cpqn,
 	}
 }
 
 type personQualityController struct {
-	gpq interactors.GetPersonQuality
+	gpq  interactors.GetPersonQuality
+	cpqn interactors.CreatePersonQualityNote
 }
 
 type GetPersonQualityResponse struct {
@@ -40,12 +45,13 @@ type PersonQuality struct {
 }
 
 type Note struct {
-	UUID       uuid.UUID `json:"uuid"`
-	PersonUUID uuid.UUID `json:"personUUID"`
-	Title      string    `json:"title"`
-	Body       string    `json:"body"`
-	CreatedAt  time.Time `json:"createdAt"`
-	UpdatedAt  time.Time `json:"updatedAt"`
+	UUID              uuid.UUID `json:"uuid"`
+	PersonUUID        uuid.UUID `json:"personUUID"`
+	PersonQualityUUID uuid.UUID `json:"personQualityUUID"`
+	Title             string    `json:"title"`
+	Body              string    `json:"body"`
+	CreatedAt         time.Time `json:"createdAt"`
+	UpdatedAt         time.Time `json:"updatedAt"`
 }
 
 func (c personQualityController) Get(w http.ResponseWriter, r *http.Request) {
@@ -67,10 +73,53 @@ func (c personQualityController) Get(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, GetPersonQualityResponse{PersonQuality: mapPersonQuality(pq)})
 }
 
+type CreatePersonQualityNote struct {
+	Title string `json:"title"`
+	Body  string `json:"body"`
+}
+
+type CreatePersonQualityNoteResponse struct {
+	Error string    `json:"error,omitempty"`
+	UUID  uuid.UUID `json:"uuid"`
+}
+
+func (c personQualityController) CreateNote(w http.ResponseWriter, r *http.Request) {
+	reqUUIDParam := chi.URLParam(r, "UUID")
+	reqUUID, err := uuid.Parse(reqUUIDParam)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		render.JSON(w, r, CreatePersonQualityNoteResponse{Error: "not found"})
+		return
+	}
+	var req CreatePersonNoteRequest
+	if err = json.NewDecoder(r.Body).Decode(&req); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		render.JSON(w, r, CreatePersonQualityNoteResponse{Error: "invalid body format"})
+		return
+	}
+
+	n, err := c.cpqn.Execute(r.Context(), interactors.CreatePersonQualityNoteRequest{
+		PersonQualityUUID: reqUUID,
+		NoteTitle:         req.Title,
+		NoteBody:          req.Body,
+	})
+	if errors.Is(err, interactors.ErrNotFound) {
+		w.WriteHeader(http.StatusNotFound)
+		render.JSON(w, r, CreatePersonQualityNoteResponse{Error: "not found"})
+		return
+	}
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		render.JSON(w, r, CreatePersonQualityNoteResponse{Error: "something went wrong"})
+		return
+	}
+	render.JSON(w, r, CreatePersonQualityNoteResponse{UUID: n.UUID})
+}
+
 func mapPersonQuality(pq models.PersonQuality) PersonQuality {
 	notes := make([]Note, 0)
 	for _, n := range pq.Notes {
-		notes = append(notes, mapNote(n, pq.Person.UUID))
+		notes = append(notes, mapNote(n, pq.Person.UUID, pq.UUID))
 	}
 	return PersonQuality{
 		UUID:       pq.UUID,
@@ -82,13 +131,14 @@ func mapPersonQuality(pq models.PersonQuality) PersonQuality {
 	}
 }
 
-func mapNote(note models.Note, personUUID uuid.UUID) Note {
+func mapNote(note models.Note, personUUID uuid.UUID, personQualityUUID uuid.UUID) Note {
 	return Note{
-		UUID:       note.UUID,
-		PersonUUID: personUUID,
-		Title:      note.Title,
-		Body:       note.Body,
-		CreatedAt:  note.CreatedAt,
-		UpdatedAt:  note.UpdatedAt,
+		UUID:              note.UUID,
+		PersonUUID:        personUUID,
+		PersonQualityUUID: personQualityUUID,
+		Title:             note.Title,
+		Body:              note.Body,
+		CreatedAt:         note.CreatedAt,
+		UpdatedAt:         note.UpdatedAt,
 	}
 }
