@@ -8,6 +8,7 @@ type PersonQuality struct {
 	database.BaseModel
 	database.Segmented
 	PersonId  uint
+	Person    Person
 	QualityId uint
 	Quality   Quality
 	UserId    uint

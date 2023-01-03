@@ -29,6 +29,8 @@ func main() {
 	sessionRepo := repos.NewSessionRepo(db)
 	journalRepo := repos.NewJournalRepo(db)
 	personRepo := repos.NewPersonRepo(db)
+	personQualityRepo := repos.NewPersonQualityRepo(db)
+	qualityRepo := repos.NewQualityRepo(db)
 
 	//Setup interactors
 	createSession := interactors.NewCreateSession(userRepo, sessionRepo, cfg.Session.SigningSecret)
@@ -65,11 +67,22 @@ func main() {
 			personController := controllers.NewPersonController(
 				interactors.NewCreatePerson(personRepo),
 				interactors.NewGetPerson(personRepo),
+				interactors.NewListPersonQualities(personRepo, personQualityRepo),
 				interactors.NewListPeople(personRepo),
 			)
 			r.Get("/", personController.List)
 			r.Post("/", personController.Create)
 			r.Get("/{UUID}", personController.Get)
+			r.Get("/{UUID}/qualities", personController.ListPersonQualities)
+		})
+
+		r.Route("/person-quality", func(r chi.Router) {
+			personQualityController := controllers.NewPersonQualityController(
+				interactors.NewCreatePersonQuality(personRepo, qualityRepo, personQualityRepo),
+				interactors.NewGetPersonQuality(personQualityRepo),
+			)
+			r.Post("/", personQualityController.Create)
+			r.Get("/{UUID}", personQualityController.Get)
 		})
 	})
 

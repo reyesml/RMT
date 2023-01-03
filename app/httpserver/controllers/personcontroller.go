@@ -15,21 +15,24 @@ import (
 type PersonController interface {
 	Create(w http.ResponseWriter, r *http.Request)
 	Get(w http.ResponseWriter, r *http.Request)
+	ListPersonQualities(w http.ResponseWriter, r *http.Request)
 	List(w http.ResponseWriter, r *http.Request)
 }
 
-func NewPersonController(cp interactors.CreatePerson, gp interactors.GetPerson, lp interactors.ListPeople) personController {
+func NewPersonController(cp interactors.CreatePerson, gp interactors.GetPerson, lpq interactors.ListPersonQualities, lp interactors.ListPeople) personController {
 	return personController{
-		cp: cp,
-		gp: gp,
-		lp: lp,
+		cp:  cp,
+		gp:  gp,
+		lpq: lpq,
+		lp:  lp,
 	}
 }
 
 type personController struct {
-	cp interactors.CreatePerson
-	gp interactors.GetPerson
-	lp interactors.ListPeople
+	cp  interactors.CreatePerson
+	gp  interactors.GetPerson
+	lpq interactors.ListPersonQualities
+	lp  interactors.ListPeople
 }
 
 type CreatePersonRequest struct {
@@ -69,6 +72,7 @@ func (c personController) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 type Person struct {
+	UUID      uuid.UUID `json:"uuid"`
 	FirstName string    `json:"firstName"`
 	LastName  string    `json:"lastName"`
 	CreatedAt time.Time `json:"createdAt"`
@@ -105,6 +109,33 @@ func (c personController) Get(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+type ListPersonQualityResponse struct {
+	Error           string `json:"error,omitempty"`
+	PersonQualities []PersonQuality
+}
+
+func (c personController) ListPersonQualities(w http.ResponseWriter, r *http.Request) {
+	reqUUIDParam := chi.URLParam(r, "UUID")
+	reqUUID, err := uuid.Parse(reqUUIDParam)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		render.JSON(w, r, ListPersonQualityResponse{Error: "not found"})
+		return
+	}
+
+	pqs, err := c.lpq.Execute(r.Context(), interactors.ListPersonQualitiesRequest{PersonUUID: reqUUID})
+	if errors.Is(err, interactors.ErrNotFound) {
+		w.WriteHeader(http.StatusNotFound)
+		render.JSON(w, r, ListPersonQualityResponse{Error: "not found"})
+		return
+	}
+	pql := make([]PersonQuality, 0)
+	for _, pq := range pqs {
+		pql = append(pql, mapPersonQuality(pq))
+	}
+	render.JSON(w, r, ListPersonQualityResponse{PersonQualities: pql})
+}
+
 type ListPersonResponse struct {
 	Error  string   `json:"error,omitempty"`
 	People []Person `json:"people,omitempty"`
@@ -126,6 +157,7 @@ func (c personController) List(w http.ResponseWriter, r *http.Request) {
 
 func mapPerson(p models.Person) Person {
 	return Person{
+		UUID:      p.UUID,
 		FirstName: p.FirstName,
 		LastName:  p.LastName,
 		CreatedAt: p.CreatedAt,
