@@ -145,7 +145,7 @@ func (c personQualityController) ListNotes(w http.ResponseWriter, r *http.Reques
 		render.JSON(w, r, ListPersonQualityNotesResponse{Error: "something went wrong"})
 		return
 	}
-	var result = make([]Note, 0)
+	result := make([]Note, 0)
 	for _, n := range ns {
 		result = append(result, mapNote(n, n.Person.UUID, n.PersonQuality.UUID))
 	}

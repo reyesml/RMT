@@ -128,7 +128,7 @@ func (c journalController) List(w http.ResponseWriter, r *http.Request) {
 		render.JSON(w, r, GetJournalResponse{Error: "something went wrong"})
 		return
 	}
-	var result []JournalResponse
+	result := make([]JournalResponse, 0)
 	for _, je := range jes {
 		result = append(result, buildJournalResponse(je))
 	}
