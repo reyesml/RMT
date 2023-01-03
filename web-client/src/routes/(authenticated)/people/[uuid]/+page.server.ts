@@ -17,7 +17,6 @@ export const load = (async ({ cookies, params }) => {
 	} else {
 		qualities = (await res.json()).personQualities;
 	}
-	console.log('quals', qualities);
 
 	res = await gateways.people.getNotes(auth, params.uuid);
 	let notes;
@@ -26,8 +25,6 @@ export const load = (async ({ cookies, params }) => {
 	} else {
 		notes = (await res.json()).notes;
 	}
-
-	console.log('notes', notes);
 
 	return {
 		person: person,
