@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"encoding/json"
-	"errors"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"github.com/google/uuid"
@@ -17,51 +15,14 @@ type PersonQualityController interface {
 	Get(w http.ResponseWriter, r *http.Request)
 }
 
-func NewPersonQualityController(cpq interactors.CreatePersonQuality, gpq interactors.GetPersonQuality) personQualityController {
+func NewPersonQualityController(gpq interactors.GetPersonQuality) personQualityController {
 	return personQualityController{
-		cpq: cpq,
 		gpq: gpq,
 	}
 }
 
 type personQualityController struct {
-	cpq interactors.CreatePersonQuality
 	gpq interactors.GetPersonQuality
-}
-
-type CreatePersonQualityRequest struct {
-	PersonUUID  uuid.UUID `json:"personUUID"`
-	QualityName string    `json:"qualityName"`
-}
-
-type CreatePersonQualityResponse struct {
-	Error string    `json:"error,omitempty"`
-	UUID  uuid.UUID `json:"uuid"`
-}
-
-func (c personQualityController) Create(w http.ResponseWriter, r *http.Request) {
-	var createReq CreatePersonQualityRequest
-	if err := json.NewDecoder(r.Body).Decode(&createReq); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		render.JSON(w, r, CreatePersonQualityResponse{Error: "invalid body format"})
-		return
-	}
-
-	pq, err := c.cpq.Execute(r.Context(), interactors.CreatePersonQualityRequest{
-		PersonUUID:  createReq.PersonUUID,
-		QualityName: createReq.QualityName,
-	})
-	if errors.Is(err, interactors.ErrNotFound) {
-		w.WriteHeader(http.StatusNotFound)
-		render.JSON(w, r, CreatePersonQualityResponse{Error: "not found"})
-		return
-	}
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		render.JSON(w, r, CreatePersonQualityResponse{Error: "something went wrong"})
-		return
-	}
-	render.JSON(w, r, CreatePersonQualityResponse{UUID: pq.UUID})
 }
 
 type GetPersonQualityResponse struct {

@@ -15,14 +15,16 @@ import (
 type PersonController interface {
 	Create(w http.ResponseWriter, r *http.Request)
 	Get(w http.ResponseWriter, r *http.Request)
+	CreatePersonQuality(w http.ResponseWriter, r *http.Request)
 	ListPersonQualities(w http.ResponseWriter, r *http.Request)
 	List(w http.ResponseWriter, r *http.Request)
 }
 
-func NewPersonController(cp interactors.CreatePerson, gp interactors.GetPerson, lpq interactors.ListPersonQualities, lp interactors.ListPeople) personController {
+func NewPersonController(cp interactors.CreatePerson, gp interactors.GetPerson, cpq interactors.CreatePersonQuality, lpq interactors.ListPersonQualities, lp interactors.ListPeople) personController {
 	return personController{
 		cp:  cp,
 		gp:  gp,
+		cpq: cpq,
 		lpq: lpq,
 		lp:  lp,
 	}
@@ -31,6 +33,7 @@ func NewPersonController(cp interactors.CreatePerson, gp interactors.GetPerson, 
 type personController struct {
 	cp  interactors.CreatePerson
 	gp  interactors.GetPerson
+	cpq interactors.CreatePersonQuality
 	lpq interactors.ListPersonQualities
 	lp  interactors.ListPeople
 }
@@ -112,6 +115,47 @@ func (c personController) Get(w http.ResponseWriter, r *http.Request) {
 type ListPersonQualityResponse struct {
 	Error           string `json:"error,omitempty"`
 	PersonQualities []PersonQuality
+}
+
+type CreatePersonQualityRequest struct {
+	QualityName string `json:"qualityName"`
+}
+
+type CreatePersonQualityResponse struct {
+	Error string    `json:"error,omitempty"`
+	UUID  uuid.UUID `json:"uuid"`
+}
+
+func (c personController) CreatePersonQuality(w http.ResponseWriter, r *http.Request) {
+	reqUUIDParam := chi.URLParam(r, "UUID")
+	reqUUID, err := uuid.Parse(reqUUIDParam)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		render.JSON(w, r, ListPersonQualityResponse{Error: "not found"})
+		return
+	}
+	var createReq CreatePersonQualityRequest
+	if err := json.NewDecoder(r.Body).Decode(&createReq); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		render.JSON(w, r, CreatePersonQualityResponse{Error: "invalid body format"})
+		return
+	}
+
+	pq, err := c.cpq.Execute(r.Context(), interactors.CreatePersonQualityRequest{
+		PersonUUID:  reqUUID,
+		QualityName: createReq.QualityName,
+	})
+	if errors.Is(err, interactors.ErrNotFound) {
+		w.WriteHeader(http.StatusNotFound)
+		render.JSON(w, r, CreatePersonQualityResponse{Error: "not found"})
+		return
+	}
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		render.JSON(w, r, CreatePersonQualityResponse{Error: "something went wrong"})
+		return
+	}
+	render.JSON(w, r, CreatePersonQualityResponse{UUID: pq.UUID})
 }
 
 func (c personController) ListPersonQualities(w http.ResponseWriter, r *http.Request) {

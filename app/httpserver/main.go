@@ -67,6 +67,7 @@ func main() {
 			personController := controllers.NewPersonController(
 				interactors.NewCreatePerson(personRepo),
 				interactors.NewGetPerson(personRepo),
+				interactors.NewCreatePersonQuality(personRepo, qualityRepo, personQualityRepo),
 				interactors.NewListPersonQualities(personRepo, personQualityRepo),
 				interactors.NewListPeople(personRepo),
 			)
@@ -74,15 +75,16 @@ func main() {
 			r.Post("/", personController.Create)
 			r.Get("/{UUID}", personController.Get)
 			r.Get("/{UUID}/qualities", personController.ListPersonQualities)
+			r.Post("/{UUID}/qualities", personController.CreatePersonQuality)
 		})
 
 		r.Route("/person-quality", func(r chi.Router) {
 			personQualityController := controllers.NewPersonQualityController(
-				interactors.NewCreatePersonQuality(personRepo, qualityRepo, personQualityRepo),
 				interactors.NewGetPersonQuality(personQualityRepo),
 			)
-			r.Post("/", personQualityController.Create)
 			r.Get("/{UUID}", personQualityController.Get)
+			//Delete
+			//Edit
 		})
 	})
 
