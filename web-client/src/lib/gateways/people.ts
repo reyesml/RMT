@@ -33,3 +33,25 @@ export function create(auth: string, firstName: string, lastName: string) {
 		body: JSON.stringify({ firstName: firstName, lastName: lastName })
 	});
 }
+
+export function getQualities(auth: string, uuid: string) {
+	return fetch(`${host}/people/${uuid}/qualities`, {
+		method: 'GET',
+		cache: 'no-cache',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${auth}`
+		}
+	});
+}
+
+export function getNotes(auth: string, uuid: string) {
+	return fetch(`${host}/people/${uuid}/notes`, {
+		method: 'GET',
+		cache: 'no-cache',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${auth}`
+		}
+	});
+}

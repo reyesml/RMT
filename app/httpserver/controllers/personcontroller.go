@@ -127,8 +127,8 @@ func (c personController) Get(w http.ResponseWriter, r *http.Request) {
 }
 
 type ListPersonQualityResponse struct {
-	Error           string `json:"error,omitempty"`
-	PersonQualities []PersonQuality
+	Error           string          `json:"error,omitempty"`
+	PersonQualities []PersonQuality `json:"personQualities"`
 }
 
 type CreatePersonQualityRequest struct {
