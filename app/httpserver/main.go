@@ -95,6 +95,13 @@ func main() {
 			//Delete
 			//Edit
 		})
+
+		r.Route("/qualities", func(r chi.Router) {
+			qualityController := controllers.NewQualityController(
+				interactors.NewListQualities(qualityRepo),
+			)
+			r.Get("/", qualityController.List)
+		})
 	})
 
 	http.ListenAndServe(fmt.Sprintf(":%v", cfg.Server.Port), r)
