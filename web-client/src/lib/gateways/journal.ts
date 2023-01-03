@@ -6,7 +6,7 @@ export function create(auth: string, mood: string, title: string, body: string) 
 		cache: 'no-cache',
 		headers: {
 			'Content-Type': 'application/json',
-      'Authorization': `Bearer ${auth}`
+			Authorization: `Bearer ${auth}`
 		},
 		body: JSON.stringify({ mood: mood, title: title, body: body })
 	});
@@ -18,18 +18,18 @@ export function list(auth: string) {
 		cache: 'no-cache',
 		headers: {
 			'Content-Type': 'application/json',
-      'Authorization': `Bearer ${auth}`
+			Authorization: `Bearer ${auth}`
 		}
 	});
 }
 
-export function get(auth: string, uuid: string){
+export function get(auth: string, uuid: string) {
 	return fetch(`${host}/journal/${uuid}`, {
 		method: 'GET',
 		cache: 'no-cache',
 		headers: {
 			'Content-Type': 'application/json',
-      'Authorization': `Bearer ${auth}`
+			Authorization: `Bearer ${auth}`
 		}
 	});
 }
