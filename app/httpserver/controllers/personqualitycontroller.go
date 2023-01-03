@@ -18,16 +18,18 @@ type PersonQualityController interface {
 	ListNotes(w http.ResponseWriter, r *http.Request)
 }
 
-func NewPersonQualityController(gpq interactors.GetPersonQuality, cpqn interactors.CreatePersonQualityNote) personQualityController {
+func NewPersonQualityController(gpq interactors.GetPersonQuality, cpqn interactors.CreatePersonQualityNote, lpqn interactors.ListPersonQualityNotes) personQualityController {
 	return personQualityController{
 		gpq:  gpq,
 		cpqn: cpqn,
+		lpqn: lpqn,
 	}
 }
 
 type personQualityController struct {
 	gpq  interactors.GetPersonQuality
 	cpqn interactors.CreatePersonQualityNote
+	lpqn interactors.ListPersonQualityNotes
 }
 
 type GetPersonQualityResponse struct {
@@ -114,6 +116,40 @@ func (c personQualityController) CreateNote(w http.ResponseWriter, r *http.Reque
 		return
 	}
 	render.JSON(w, r, CreatePersonQualityNoteResponse{UUID: n.UUID})
+}
+
+type ListPersonQualityNotesResponse struct {
+	Error string `json:"error,omitempty"`
+	Notes []Note `json:"notes"`
+}
+
+func (c personQualityController) ListNotes(w http.ResponseWriter, r *http.Request) {
+	reqUUIDParam := chi.URLParam(r, "UUID")
+	reqUUID, err := uuid.Parse(reqUUIDParam)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		render.JSON(w, r, ListPersonQualityNotesResponse{Error: "not found"})
+		return
+	}
+
+	ns, err := c.lpqn.Execute(r.Context(), interactors.ListPersonQualityNotesRequest{
+		PersonQualityUUID: reqUUID,
+	})
+	if errors.Is(err, interactors.ErrNotFound) {
+		w.WriteHeader(http.StatusNotFound)
+		render.JSON(w, r, ListPersonQualityNotesResponse{Error: "not found"})
+		return
+	}
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		render.JSON(w, r, ListPersonQualityNotesResponse{Error: "something went wrong"})
+		return
+	}
+	var result = make([]Note, 0)
+	for _, n := range ns {
+		result = append(result, mapNote(n, n.Person.UUID, n.PersonQuality.UUID))
+	}
+	render.JSON(w, r, ListPersonNotesResponse{Notes: result})
 }
 
 func mapPersonQuality(pq models.PersonQuality) PersonQuality {

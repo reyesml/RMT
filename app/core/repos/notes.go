@@ -59,6 +59,6 @@ func (r noteRepo) ListByPersonId(pid uint) ([]models.Note, error) {
 
 func (r noteRepo) ListByPersonQualityId(pqid uint) ([]models.Note, error) {
 	var ns []models.Note
-	result := r.db.Preload("PersonQuality").Where("person_quality_id = ?", pqid).Find(&ns)
+	result := r.db.Preload("PersonQuality").Preload("Person").Where("person_quality_id = ?", pqid).Find(&ns)
 	return ns, result.Error
 }

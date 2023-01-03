@@ -87,8 +87,10 @@ func main() {
 			personQualityController := controllers.NewPersonQualityController(
 				interactors.NewGetPersonQuality(personQualityRepo),
 				interactors.NewCreatePersonQualityNote(personQualityRepo, noteRepo),
+				interactors.NewListPersonQualityNotes(personQualityRepo, noteRepo),
 			)
 			r.Get("/{UUID}", personQualityController.Get)
+			r.Get("/{UUID}/notes", personQualityController.ListNotes)
 			r.Post("/{UUID}/notes", personQualityController.CreateNote)
 			//Delete
 			//Edit
