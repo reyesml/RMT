@@ -27,10 +27,11 @@ type personQualityController struct {
 
 type GetPersonQualityResponse struct {
 	Error         string        `json:"error,omitempty"`
-	PersonQuality PersonQuality `json:"personQuality"`
+	PersonQuality PersonQuality `json:"personQuality,omitempty"`
 }
 
 type PersonQuality struct {
+	UUID       uuid.UUID `json:"uuid"`
 	PersonUUID uuid.UUID `json:"personUUID"`
 	Name       string    `json:"name"`
 	Notes      []Note    `json:"notes"`
@@ -39,6 +40,7 @@ type PersonQuality struct {
 }
 
 type Note struct {
+	UUID       uuid.UUID `json:"uuid"`
 	PersonUUID uuid.UUID `json:"personUUID"`
 	Title      string    `json:"title"`
 	Body       string    `json:"body"`
@@ -71,6 +73,7 @@ func mapPersonQuality(pq models.PersonQuality) PersonQuality {
 		notes = append(notes, mapNote(n, pq.Person.UUID))
 	}
 	return PersonQuality{
+		UUID:       pq.UUID,
 		PersonUUID: pq.Person.UUID,
 		Name:       pq.Quality.Name,
 		Notes:      notes,
@@ -81,6 +84,7 @@ func mapPersonQuality(pq models.PersonQuality) PersonQuality {
 
 func mapNote(note models.Note, personUUID uuid.UUID) Note {
 	return Note{
+		UUID:       note.UUID,
 		PersonUUID: personUUID,
 		Title:      note.Title,
 		Body:       note.Body,
