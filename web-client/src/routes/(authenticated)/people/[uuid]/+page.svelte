@@ -1,7 +1,9 @@
 <script lang="ts">
+	import type { Note } from '$lib/models/note';
 	import type { Person } from '$lib/models/person';
     import type { PersonQuality } from '$lib/models/person-quality';
 	import type { PageData } from './$types';
+	import NoteList from './note-list.svelte';
 	import QualityList from './quality-list.svelte';
 
 	export let data: PageData;
@@ -10,6 +12,9 @@
 
     let qualities: PersonQuality[];
     $: qualities = data.qualities;
+
+    let notes: Note[];
+    $: notes = data.notes;
 </script>
 
 <svelte:head>
@@ -28,7 +33,10 @@
                     <QualityList {qualities} />
                     <div>Add Quality (TODO)</div>
                 </div>
-				<div class="mt-6">Notes list here</div>
+				<div class="mt-6">
+                    <NoteList notes={notes} />
+                    <div>Add Note (TODO)</div>
+                </div>
 			{/if}
 		</div>
 	</div>
