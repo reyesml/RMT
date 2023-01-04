@@ -55,3 +55,15 @@ export function getNotes(auth: string, uuid: string) {
 		}
 	});
 }
+
+export function createNote(auth: string, uuid: string, title: string, body: string) {
+	return fetch(`${host}/people/${uuid}/notes`, {
+		method: 'POST',
+		cache: 'no-cache',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${auth}`
+		},
+		body: JSON.stringify({ title: title, body: body })
+	});
+}

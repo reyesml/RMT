@@ -1,6 +1,6 @@
 import { gateways } from '$lib/gateways';
-import { getNotes } from '$lib/gateways/people';
 import type { PageServerLoad } from './$types';
+import type { Actions } from '@sveltejs/kit';
 
 export const load = (async ({ cookies, params }) => {
 	let auth = cookies.get('session') ?? '';
@@ -32,3 +32,26 @@ export const load = (async ({ cookies, params }) => {
 		notes: notes
 	};
 }) satisfies PageServerLoad;
+
+export const actions: Actions = {
+	createNote: async ({ request, cookies }) => {
+		const data = await request.formData();
+		const title = data.get('title');
+		const body = data.get('body') ?? '';
+		const uuid = data.get('uuid') ?? '';
+		if (!title) {
+			return { success: false, error: 'title is required' };
+		}
+		let auth = cookies.get('session') ?? '';
+		const res = await gateways.people.createNote(
+			auth,
+			uuid.toString(),
+			title.toString(),
+			body.toString()
+		);
+		if (!res.ok) {
+			return { success: false, error: res.statusText };
+		}
+		return { success: true };
+	}
+};
