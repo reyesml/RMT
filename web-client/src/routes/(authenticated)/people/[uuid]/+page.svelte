@@ -62,7 +62,7 @@
 			<h2 class="text-center text-xl font-bold">Add Note</h2>
 			<form action="?/createNote" method="POST">
 				<input type="hidden" name="uuid" value={$page.params.uuid} />
-				<div>
+				<div class="mt-5">
 					<label for="title" class="sr-only">Title</label>
 					<input
 						id="title"
