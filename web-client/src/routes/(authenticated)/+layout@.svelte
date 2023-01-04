@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Portal from '$lib/components/portal/portal.svelte';
 	import Session from '$lib/components/session.svelte';
 </script>
 
@@ -24,4 +25,5 @@
 			</div>
 		</footer>
 	</div>
+	<Portal id="modal" />
 </Session>
