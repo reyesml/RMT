@@ -45,6 +45,6 @@ func (r journalRepo) GetByUUIDWithUser(uuid uuid.UUID, segment uuid.UUID) (model
 
 func (r journalRepo) ListByUserId(uid uint) ([]models.Journal, error) {
 	var jes []models.Journal
-	result := r.db.Where("user_id = ?", uid).Find(&jes)
+	result := r.db.Order("created_at desc").Where("user_id = ?", uid).Find(&jes)
 	return jes, result.Error
 }
