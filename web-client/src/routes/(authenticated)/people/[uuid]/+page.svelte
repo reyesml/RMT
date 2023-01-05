@@ -36,8 +36,28 @@
 			{:else if person}
 				<h1 class="text-4xl break-words">{`${person.firstName} ${person.lastName}`.trim()}</h1>
 				<div class="mt-6">
-					<QualityList {qualities} />
-					<!-- <div>Add Quality (TODO)</div> -->
+					<section>
+						<h2 class="text-xl font-bold">Qualities:</h2>
+						<QualityList {qualities}>
+							<form action="?/createQuality" method="POST">
+								<input type="hidden" name="uuid" value={$page.params.uuid} />
+								<div
+									class="flex items-center bg-purple-600 text-md text-center text-white py-1 px-2 mr-2 rounded-full border border-transparent focus-within:z-10 focus-within:border-green-400 focus-within:outline-none focus-within:ring-green-400"
+								>
+									<input
+										name="name"
+										type="text"
+										required
+										placeholder="add new..."
+										class="bg-transparent appearance-none w-20 placeholder-white focus:outline-none"
+									/>
+									<button type="submit">
+										<PlusIcon class="h-4 w-4" />
+									</button>
+								</div>
+							</form>
+						</QualityList>
+					</section>
 				</div>
 				<section class="mt-6 w-full">
 					<div class="flex items-center">
@@ -58,7 +78,7 @@
 
 {#if isNoteModalOpen}
 	<Modal>
-		<section class="w-[700px] bg-gray-800 border-2 border-purple-600 rounded-xl p-5">
+		<section role="dialog" class="w-[700px] bg-gray-800 border-2 border-purple-600 rounded-xl p-5 focus:outline-none">
 			<h2 class="text-center text-xl font-bold">Add Note</h2>
 			<form action="?/createNote" method="POST">
 				<input type="hidden" name="uuid" value={$page.params.uuid} />
@@ -69,6 +89,7 @@
 						name="title"
 						type="text"
 						required
+						autofocus
 						placeholder="title"
 						class="relative block w-full appearance-none rounded-3xl bg-black px-8 py-4 text-white focus:z-10 border border-transparent focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 text-xl font-bold"
 					/>
@@ -87,6 +108,7 @@
 				<div class="mt-3 flex">
 					<div>
 						<button
+							type="button"
 							on:click={() => {
 								isNoteModalOpen = false;
 							}}

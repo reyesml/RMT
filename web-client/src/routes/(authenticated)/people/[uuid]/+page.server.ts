@@ -53,5 +53,20 @@ export const actions: Actions = {
 			return { success: false, error: res.statusText };
 		}
 		return { success: true };
+	},
+	createQuality: async ({ request, cookies }) => {
+		const data = await request.formData();
+		const name = data.get('name');
+		const uuid = data.get('uuid');
+		if (!name) {
+			return { success: false, error: 'name is required' };
+		}
+		let auth = cookies.get('session') ?? '';
+		const res = await gateways.people.createQuality(auth, uuid!.toString()!, name.toString());
+		if (!res.ok) {
+			console.log(await res.json())
+			return { success: false, error: res.statusText };
+		}
+		return { success: true };
 	}
 };

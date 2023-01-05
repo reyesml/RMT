@@ -67,3 +67,15 @@ export function createNote(auth: string, uuid: string, title: string, body: stri
 		body: JSON.stringify({ title: title, body: body })
 	});
 }
+
+export function createQuality(auth: string, uuid: string, name: string) {
+	return fetch(`${host}/people/${uuid}/qualities`, {
+		method: 'POST',
+		cache: 'no-cache',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${auth}`
+		},
+		body: JSON.stringify({ qualityName: name })
+	});
+}

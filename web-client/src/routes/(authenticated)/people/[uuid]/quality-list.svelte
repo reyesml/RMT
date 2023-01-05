@@ -3,15 +3,12 @@
 	export let qualities: PersonQuality[] = [];
 </script>
 
-{#if qualities}
-	<section>
-		<h2 class="text-xl font-bold">Qualities:</h2>
-		<div class="flex items-center mt-1">
-			{#each qualities as { name, uuid }}
-				<a href="/person-quality/{uuid}" class="text-md text-center text-white bg-green-600 py-1 px-2 ml-2 rounded-full"
-					>{name}</a
-				>
-			{/each}
-		</div>
-	</section>
-{/if}
+<div class="flex flex-wrap gap-y-1 items-center mt-1 w-full">
+	<slot />
+	{#each qualities as { name, uuid }}
+		<a
+			href="/person-quality/{uuid}"
+			class="text-md text-center text-white bg-green-600 py-1 px-2 mr-2 rounded-full">{name}</a
+		>
+	{/each}
+</div>
