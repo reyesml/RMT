@@ -39,6 +39,6 @@ func (r personQualityRepo) GetByUUID(uuid uuid.UUID, segment uuid.UUID) (models.
 
 func (r personQualityRepo) ListByPerson(pid uint) ([]models.PersonQuality, error) {
 	var pqs []models.PersonQuality
-	result := r.db.Preload("Quality").Preload("Person").Preload("Notes").Where("person_id = ?", pid).Find(&pqs)
+	result := r.db.Order("created_at desc").Preload("Quality").Preload("Person").Preload("Notes").Where("person_id = ?", pid).Find(&pqs)
 	return pqs, result.Error
 }
