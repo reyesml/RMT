@@ -1,5 +1,7 @@
 import { tick } from 'svelte';
 
+// TODO: this is a global variable and may become a global
+// singleton when SSR is envoked. Refactor into something not-global.
 const portal_map = new Map();
 
 export function createPortal(node: Node, id = 'default') {
