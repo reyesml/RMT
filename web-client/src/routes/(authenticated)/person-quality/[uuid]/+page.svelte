@@ -10,7 +10,6 @@
 
     
     export let data: PageData;
-    console.log(data);
     let person: Person;
 	$: person = data.person;
     
