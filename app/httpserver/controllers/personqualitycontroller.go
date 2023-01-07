@@ -34,6 +34,7 @@ type personQualityController struct {
 
 type GetPersonQualityResponse struct {
 	Error         string        `json:"error,omitempty"`
+	Person        Person        `json:"person"`
 	PersonQuality PersonQuality `json:"personQuality,omitempty"`
 }
 
@@ -72,7 +73,10 @@ func (c personQualityController) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render.JSON(w, r, GetPersonQualityResponse{PersonQuality: mapPersonQuality(pq)})
+	render.JSON(w, r, GetPersonQualityResponse{
+		PersonQuality: mapPersonQuality(pq),
+		Person:        mapPerson(pq.Person),
+	})
 }
 
 type CreatePersonQualityNote struct {
