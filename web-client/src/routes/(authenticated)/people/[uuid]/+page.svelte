@@ -6,7 +6,7 @@
 	import type { Person } from '$lib/models/person';
 	import type { PersonQuality } from '$lib/models/person-quality';
 	import type { ActionData, PageData } from './$types';
-	import NoteList from './note-list.svelte';
+	import NoteList from '$lib/components/note-list.svelte';
 	import QualityList from './quality-list.svelte';
 
 	export let data: PageData;

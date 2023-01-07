@@ -1,14 +1,21 @@
 <script lang="ts">
+	import PlusIcon from '$lib/components/icons/plus-icon.svelte';
+	import Modal from '$lib/components/modal.svelte';
 	import type { Note } from '$lib/models/note';
 	import type { Person } from '$lib/models/person';
 	import type { PersonQuality } from '$lib/models/person-quality';
     import type { ActionData, PageData } from './$types';
+    import NoteList from '$lib/components/note-list.svelte';
+	import { page } from '$app/stores';
+
     
     export let data: PageData;
+    console.log(data);
     let person: Person;
 	$: person = data.person;
     
     let quality: PersonQuality;
+    $: quality = data.quality;
 
     let notes: Note[];
 	$: notes = data.notes;
@@ -31,7 +38,10 @@
 			{#if data.error}
 				<h1>{data.error}</h1>
 			{:else if person}
-				<h1 class="text-4xl break-words">{`${person.firstName} ${person.lastName}`.trim() + `:${quality.name}`}</h1>
+				<h1 class="text-4xl break-words">
+                    <a href="/people/{person.uuid}" class="text-green-500">{`${person.firstName} ${person.lastName}`.trim()}</a>
+                    -- {quality.name}
+                </h1>
 				<section class="mt-6 w-full">
 					<div class="flex items-center">
 						<h2 class="text-xl font-bold">Notes</h2>

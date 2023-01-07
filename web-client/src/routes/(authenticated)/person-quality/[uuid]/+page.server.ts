@@ -4,21 +4,13 @@ import type { Actions } from '@sveltejs/kit';
 
 export const load = (async ({ cookies, params }) => {
 	let auth = cookies.get('session') ?? '';
-	let res = await gateways.people.get(auth, params.uuid);
+	let res = await gateways.personQuality.get(auth, params.uuid);
 	if (!res.ok) {
 		return { error: res.statusText };
 	}
-	const person = (await res.json()).person;
+	const { person, personQuality } = await res.json();
 
-	res = await gateways.people.getQualities(auth, params.uuid);
-	let qualities;
-	if (!res.ok) {
-		qualities = [{ name: 'Error Loading qualities', uuid: 'not-found' }];
-	} else {
-		qualities = (await res.json()).personQualities;
-	}
-
-	res = await gateways.people.getNotes(auth, params.uuid);
+	res = await gateways.personQuality.getNotes(auth, params.uuid);
 	let notes;
 	if (!res.ok) {
 		notes = [{ title: 'Error Loading Notes', body: '', uuid: '' }];
@@ -28,7 +20,7 @@ export const load = (async ({ cookies, params }) => {
 
 	return {
 		person: person,
-		qualities: qualities,
+		quality: personQuality,
 		notes: notes
 	};
 }) satisfies PageServerLoad;
@@ -43,26 +35,12 @@ export const actions: Actions = {
 			return { success: false, error: 'title is required' };
 		}
 		let auth = cookies.get('session') ?? '';
-		const res = await gateways.people.createNote(
+		const res = await gateways.personQuality.createNote(
 			auth,
 			uuid.toString(),
 			title.toString(),
 			body.toString()
 		);
-		if (!res.ok) {
-			return { success: false, error: res.statusText };
-		}
-		return { success: true };
-	},
-	createQuality: async ({ request, cookies }) => {
-		const data = await request.formData();
-		const name = data.get('name');
-		const uuid = data.get('uuid');
-		if (!name) {
-			return { success: false, error: 'name is required' };
-		}
-		let auth = cookies.get('session') ?? '';
-		const res = await gateways.people.createQuality(auth, uuid!.toString()!, name.toString());
 		if (!res.ok) {
 			return { success: false, error: res.statusText };
 		}
