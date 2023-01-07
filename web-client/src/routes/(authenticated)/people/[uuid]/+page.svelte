@@ -78,10 +78,13 @@
 
 {#if isNoteModalOpen}
 	<Modal>
-		<section role="dialog" class="w-[700px] bg-gray-800 border-2 border-purple-600 rounded-xl p-5 focus:outline-none">
+		<section
+			role="dialog"
+			class="w-[700px] bg-gray-800 border-2 border-purple-600 rounded-xl p-5 focus:outline-none"
+		>
 			<h2 class="text-center text-xl font-bold">Add Note</h2>
 			<form action="?/createNote" method="POST">
-				<input type="hidden" name="uuid" value={$page.params.uuid} />
+				<input tabindex="-1" type="hidden" name="uuid" value={$page.params.uuid} />
 				<div class="mt-5">
 					<label for="title" class="sr-only">Title</label>
 					<input
@@ -89,7 +92,6 @@
 						name="title"
 						type="text"
 						required
-						autofocus
 						placeholder="title"
 						class="relative block w-full appearance-none rounded-3xl bg-black px-8 py-4 text-white focus:z-10 border border-transparent focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 text-xl font-bold"
 					/>
@@ -128,6 +130,8 @@
 		</section>
 	</Modal>
 	{() => {
+		//TODO: find better way to thandle this. This is
+		//janky.
 		//close modal after successful submission.
 		if (!form || !form.success) return;
 		isNoteModalOpen = false;
