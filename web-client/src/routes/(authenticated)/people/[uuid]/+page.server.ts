@@ -64,7 +64,6 @@ export const actions: Actions = {
 		let auth = cookies.get('session') ?? '';
 		const res = await gateways.people.createQuality(auth, uuid!.toString()!, name.toString());
 		if (!res.ok) {
-			console.log(await res.json())
 			return { success: false, error: res.statusText };
 		}
 		return { success: true };
