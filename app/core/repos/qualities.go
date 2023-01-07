@@ -13,7 +13,7 @@ type QualityRepo interface {
 	GetByUUID(uuid uuid.UUID, segment uuid.UUID) (models.Quality, error)
 	GetByID(id uint, segment uuid.UUID) (models.Quality, error)
 	ListBySegment(segment uuid.UUID) ([]models.Quality, error)
-	FindByName(name string, userId uint, segment uuid.UUID) ([]models.Quality, error)
+	FindByNameAndType(name string, t string, userId uint, segment uuid.UUID) ([]models.Quality, error)
 }
 
 type qualityRepo struct {
@@ -26,6 +26,7 @@ func NewQualityRepo(db *gorm.DB) qualityRepo {
 
 func (r qualityRepo) Create(quality *models.Quality) error {
 	quality.NameLower = strings.ToLower(quality.Name)
+	quality.TypeLower = strings.ToLower(quality.Type)
 	result := r.db.Create(quality)
 	return result.Error
 }
@@ -57,8 +58,12 @@ func (r qualityRepo) ListBySegment(segment uuid.UUID) ([]models.Quality, error) 
 	return qs, result.Error
 }
 
-func (r qualityRepo) FindByName(name string, userId uint, segment uuid.UUID) ([]models.Quality, error) {
+func (r qualityRepo) FindByNameAndType(name string, t string, userId uint, segment uuid.UUID) ([]models.Quality, error) {
 	var qs []models.Quality
-	result := r.db.Where("name_lower = ? and user_id = ? and segment_uuid = ?", strings.ToLower(name), userId, segment).Find(&qs)
+	result := r.db.Where("name_lower = ? and type_lower = ? and user_id = ? and segment_uuid = ?",
+		strings.ToLower(name),
+		strings.ToLower(t),
+		userId,
+		segment).Find(&qs)
 	return qs, result.Error
 }

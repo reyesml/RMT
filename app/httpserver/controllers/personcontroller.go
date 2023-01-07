@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"github.com/google/uuid"
@@ -132,7 +133,8 @@ type ListPersonQualityResponse struct {
 }
 
 type CreatePersonQualityRequest struct {
-	QualityName string `json:"qualityName"`
+	Name string `json:"name"`
+	Type string `json:"type"`
 }
 
 type CreatePersonQualityResponse struct {
@@ -157,7 +159,8 @@ func (c personController) CreatePersonQuality(w http.ResponseWriter, r *http.Req
 
 	pq, err := c.cpq.Execute(r.Context(), interactors.CreatePersonQualityRequest{
 		PersonUUID:  reqUUID,
-		QualityName: createReq.QualityName,
+		QualityName: createReq.Name,
+		QualityType: createReq.Type,
 	})
 	if errors.Is(err, interactors.ErrNotFound) {
 		w.WriteHeader(http.StatusNotFound)
@@ -165,6 +168,7 @@ func (c personController) CreatePersonQuality(w http.ResponseWriter, r *http.Req
 		return
 	}
 	if err != nil {
+		fmt.Printf("BAD THING: %v\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		render.JSON(w, r, CreatePersonQualityResponse{Error: "something went wrong"})
 		return

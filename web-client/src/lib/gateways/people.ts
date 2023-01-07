@@ -68,7 +68,7 @@ export function createNote(auth: string, uuid: string, title: string, body: stri
 	});
 }
 
-export function createQuality(auth: string, uuid: string, name: string) {
+export function createQuality(auth: string, uuid: string, name: string, type: string) {
 	return fetch(`${host}/people/${uuid}/qualities`, {
 		method: 'POST',
 		cache: 'no-cache',
@@ -76,6 +76,6 @@ export function createQuality(auth: string, uuid: string, name: string) {
 			'Content-Type': 'application/json',
 			Authorization: `Bearer ${auth}`
 		},
-		body: JSON.stringify({ qualityName: name })
+		body: JSON.stringify({ name: name, type: type })
 	});
 }

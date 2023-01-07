@@ -13,7 +13,12 @@ import (
 type CreatePersonQualityRequest struct {
 	PersonUUID  uuid.UUID
 	QualityName string
+	QualityType string
 }
+
+var allowedQualityTypes = map[string]bool{"default": true, "expertise": true}
+
+var ErrInvalidQualityType = errors.New("invalid quality type")
 
 var MissingQualityNameErr = errors.New("QualityName is required")
 
@@ -48,6 +53,15 @@ func (ia createPersonQuality) Execute(ctx context.Context, req CreatePersonQuali
 	if len(req.QualityName) == 0 {
 		return models.PersonQuality{}, MissingQualityNameErr
 	}
+	var qt string
+	if len(req.QualityType) == 0 {
+		qt = "default"
+	} else {
+		qt = req.QualityType
+	}
+	if _, ok := allowedQualityTypes[qt]; !ok {
+		return models.PersonQuality{}, ErrInvalidQualityType
+	}
 
 	// Find our person
 	p, err := ia.pr.GetByUUID(req.PersonUUID, user.SegmentUUID)
@@ -57,10 +71,11 @@ func (ia createPersonQuality) Execute(ctx context.Context, req CreatePersonQuali
 
 	// Find/Create our quality
 	var q models.Quality
-	fqs, err := ia.qr.FindByName(req.QualityName, user.ID, user.SegmentUUID)
+	fqs, err := ia.qr.FindByNameAndType(req.QualityName, qt, user.ID, user.SegmentUUID)
 	if len(fqs) == 0 {
 		// Insert a new quality record
 		q.Name = req.QualityName
+		q.Type = req.QualityType
 		q.SegmentUUID = user.SegmentUUID
 		q.UserId = user.ID
 		ia.qr.Create(&q)

@@ -21,7 +21,7 @@
 
 	let isNoteModalOpen = false;
 	export let form: ActionData;
-	if(isNoteModalOpen && (form?.success)){
+	if (isNoteModalOpen && form?.success) {
 		isNoteModalOpen = false;
 	}
 </script>
@@ -38,30 +38,54 @@
 				<h1>{data.error}</h1>
 			{:else if person}
 				<h1 class="text-4xl break-words">{`${person.firstName} ${person.lastName}`.trim()}</h1>
-				<div class="mt-6">
-					<section>
-						<h2 class="text-xl font-bold">Qualities:</h2>
-						<QualityList {qualities}>
-							<form action="?/createQuality" method="POST">
-								<input type="hidden" name="uuid" value={$page.params.uuid} />
-								<div
-									class="flex items-center bg-purple-600 text-md text-center text-white py-1 px-2 mr-2 rounded-full border border-transparent focus-within:z-10 focus-within:border-green-400 focus-within:outline-none focus-within:ring-green-400"
-								>
-									<input
-										name="name"
-										type="text"
-										required
-										placeholder="add new..."
-										class="bg-transparent appearance-none w-20 placeholder-white focus:outline-none"
-									/>
-									<button type="submit">
-										<PlusIcon class="h-4 w-4" />
-									</button>
-								</div>
-							</form>
-						</QualityList>
-					</section>
-				</div>
+				<section class="mt-6">
+					<h2 class="text-xl font-bold">Qualities:</h2>
+					<QualityList qualities={qualities.filter(q => q.type.toLocaleLowerCase() == "default")}>
+						<form action="?/createQuality" method="POST">
+							<input type="hidden" name="uuid" value={$page.params.uuid} />
+							<input type="hidden" name="qtype" value="default" />
+							<div
+								class="flex items-center bg-purple-600 text-md text-center text-white py-1 px-2 mr-2 rounded-full border border-transparent focus-within:z-10 focus-within:border-green-400 focus-within:outline-none focus-within:ring-green-400"
+							>
+								<input
+									name="name"
+									type="text"
+									required
+									placeholder="add new..."
+									class="bg-transparent appearance-none w-20 placeholder-white focus:outline-none"
+								/>
+								<button type="submit">
+									<PlusIcon class="h-4 w-4" />
+								</button>
+							</div>
+						</form>
+					</QualityList>
+				</section>
+
+				<section class="mt-6">
+					<h2 class="text-xl font-bold">Expertise:</h2>
+					<QualityList qualities={qualities.filter(q => q.type.toLocaleLowerCase() == "expertise")}>
+						<form action="?/createQuality" method="POST">
+							<input type="hidden" name="uuid" value={$page.params.uuid} />
+							<input type="hidden" name="qtype" value="expertise" />
+							<div
+								class="flex items-center bg-purple-600 text-md text-center text-white py-1 px-2 mr-2 rounded-full border border-transparent focus-within:z-10 focus-within:border-green-400 focus-within:outline-none focus-within:ring-green-400"
+							>
+								<input
+									name="name"
+									type="text"
+									required
+									placeholder="add new..."
+									class="bg-transparent appearance-none w-20 placeholder-white focus:outline-none"
+								/>
+								<button type="submit">
+									<PlusIcon class="h-4 w-4" />
+								</button>
+							</div>
+						</form>
+					</QualityList>
+				</section>
+
 				<section class="mt-6 w-full">
 					<div class="flex items-center">
 						<h2 class="text-xl font-bold">Notes</h2>
@@ -80,7 +104,11 @@
 </section>
 
 {#if isNoteModalOpen}
-	<Modal on:close={() => {isNoteModalOpen = false}}>
+	<Modal
+		on:close={() => {
+			isNoteModalOpen = false;
+		}}
+	>
 		<section
 			role="dialog"
 			class="w-[700px] bg-gray-800 border-2 border-purple-600 rounded-xl p-5 focus:outline-none"

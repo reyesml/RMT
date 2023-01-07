@@ -58,11 +58,12 @@ export const actions: Actions = {
 		const data = await request.formData();
 		const name = data.get('name');
 		const uuid = data.get('uuid');
+		const qType = data.get('qtype') ?? '';
 		if (!name) {
 			return { success: false, error: 'name is required' };
 		}
 		let auth = cookies.get('session') ?? '';
-		const res = await gateways.people.createQuality(auth, uuid!.toString()!, name.toString());
+		const res = await gateways.people.createQuality(auth, uuid!.toString(), name.toString(), qType.toString());
 		if (!res.ok) {
 			return { success: false, error: res.statusText };
 		}

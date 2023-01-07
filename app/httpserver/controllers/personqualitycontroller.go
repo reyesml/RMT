@@ -42,6 +42,7 @@ type PersonQuality struct {
 	UUID       uuid.UUID `json:"uuid"`
 	PersonUUID uuid.UUID `json:"personUUID"`
 	Name       string    `json:"name"`
+	Qtype      string    `json:"type"`
 	Notes      []Note    `json:"notes"`
 	CreatedAt  time.Time `json:"createdAt"`
 	UpdatedAt  time.Time `json:"updatedAt"`
@@ -165,6 +166,7 @@ func mapPersonQuality(pq models.PersonQuality) PersonQuality {
 		UUID:       pq.UUID,
 		PersonUUID: pq.Person.UUID,
 		Name:       pq.Quality.Name,
+		Qtype:      pq.Quality.Type,
 		Notes:      notes,
 		CreatedAt:  pq.CreatedAt,
 		UpdatedAt:  pq.UpdatedAt,

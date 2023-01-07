@@ -6,6 +6,8 @@ type Quality struct {
 	database.BaseModel
 	database.Segmented
 	Name      string
+	Type      string
+	TypeLower string
 	NameLower string
 	UserId    uint
 	User      User
