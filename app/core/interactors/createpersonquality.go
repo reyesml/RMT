@@ -75,7 +75,7 @@ func (ia createPersonQuality) Execute(ctx context.Context, req CreatePersonQuali
 	if len(fqs) == 0 {
 		// Insert a new quality record
 		q.Name = req.QualityName
-		q.Type = req.QualityType
+		q.Type = qt
 		q.SegmentUUID = user.SegmentUUID
 		q.UserId = user.ID
 		ia.qr.Create(&q)
