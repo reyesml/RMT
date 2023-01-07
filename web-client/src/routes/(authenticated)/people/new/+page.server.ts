@@ -15,6 +15,7 @@ export const actions: Actions = {
 		if (!res.ok) {
 			return { success: false, error: res.statusText };
 		}
-		throw redirect(307, '/people');
+		const uuid = (await res.json()).uuid
+		throw redirect(307, `/people/${uuid}`);
 	}
 };
