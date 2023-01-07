@@ -21,6 +21,9 @@
 
 	let isNoteModalOpen = false;
 	export let form: ActionData;
+	if(isNoteModalOpen && (form?.success)){
+		isNoteModalOpen = false;
+	}
 </script>
 
 <svelte:head>
@@ -77,7 +80,7 @@
 </section>
 
 {#if isNoteModalOpen}
-	<Modal>
+	<Modal on:close={() => {isNoteModalOpen = false}}>
 		<section
 			role="dialog"
 			class="w-[700px] bg-gray-800 border-2 border-purple-600 rounded-xl p-5 focus:outline-none"
@@ -129,11 +132,4 @@
 			</form>
 		</section>
 	</Modal>
-	{() => {
-		//TODO: find better way to thandle this. This is
-		//janky.
-		//close modal after successful submission.
-		if (!form || !form.success) return;
-		isNoteModalOpen = false;
-	}}
 {/if}
