@@ -23,9 +23,8 @@ export const actions: Actions = {
 					username: body.user.username,
 					admin: body.user.admin
 				},
-				expiration: new Date(body.expiration)
+				expiration: body.expiration
 			} as Session
-			
 		};
 	}
 };

@@ -9,13 +9,13 @@ import type { User } from '$lib/models/user';
 
 export interface Session {
 	user: User;
-	expiration: Date;
+	expiration: string;
 }
 
 export function createSessionStore() {
-	return setContext('session-store', writable<Session>());
+	return setContext('session-store', writable<Session | null>());
 }
 
 export function getSessionStore() {
-	return getContext<Writable<Session>>('session-store');
+	return getContext<Writable<Session | null>>('session-store');
 }
