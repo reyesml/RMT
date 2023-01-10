@@ -277,8 +277,26 @@ func (c personController) ListNotes(w http.ResponseWriter, r *http.Request) {
 }
 
 type ListPersonResponse struct {
-	Error  string   `json:"error,omitempty"`
-	People []Person `json:"people,omitempty"`
+	Error  string             `json:"error,omitempty"`
+	People []SearchablePerson `json:"people,omitempty"`
+}
+
+// SearchablePerson is a minified representation
+// of Person, intended to be used for client-side
+// searching
+type SearchablePerson struct {
+	UUID      uuid.UUID           `json:"UUID"`
+	FirstName string              `json:"firstName"`
+	LastName  string              `json:"lastName"`
+	Qualities []SearchableQuality `json:"qualities"`
+}
+
+// SearchableQuality is a minified representation of
+// Qualities, intended to be used for client-side
+// searching
+type SearchableQuality struct {
+	Name string `json:"name"`
+	Type string `json:"type"`
 }
 
 func (c personController) List(w http.ResponseWriter, r *http.Request) {
@@ -288,9 +306,9 @@ func (c personController) List(w http.ResponseWriter, r *http.Request) {
 		render.JSON(w, r, GetPersonResponse{Error: "something went wrong"})
 		return
 	}
-	result := make([]Person, 0)
+	result := make([]SearchablePerson, 0)
 	for _, p := range ppl {
-		result = append(result, mapPerson(p))
+		result = append(result, mapSearchablePerson(p))
 	}
 	render.JSON(w, r, ListPersonResponse{People: result})
 }
@@ -302,5 +320,21 @@ func mapPerson(p models.Person) Person {
 		LastName:  p.LastName,
 		CreatedAt: p.CreatedAt,
 		UpdatedAt: p.UpdatedAt,
+	}
+}
+
+func mapSearchablePerson(p models.Person) SearchablePerson {
+	qualities := make([]SearchableQuality, 0)
+	for _, q := range p.Qualities {
+		qualities = append(qualities, SearchableQuality{
+			Name: q.Name,
+			Type: q.Type,
+		})
+	}
+	return SearchablePerson{
+		UUID:      p.UUID,
+		FirstName: p.FirstName,
+		LastName:  p.LastName,
+		Qualities: qualities,
 	}
 }

@@ -46,6 +46,6 @@ func (r personRepo) ListByUserId(uid uint) ([]models.Person, error) {
 
 func (r personRepo) ListBySegment(segment uuid.UUID) ([]models.Person, error) {
 	var ppl []models.Person
-	result := r.db.Where("segment_uuid = ?", segment).Find(&ppl)
+	result := r.db.Preload("Qualities").Where("segment_uuid = ?", segment).Find(&ppl)
 	return ppl, result.Error
 }

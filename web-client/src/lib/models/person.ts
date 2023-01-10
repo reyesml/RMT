@@ -5,3 +5,15 @@ export interface Person {
 	createdAt: string;
 	updatedAt: string;
 }
+
+export interface SearchablePerson {
+	uuid: string;
+	firstName: string;
+	lastName: string;
+	qualities: SearchableQuality[];
+}
+
+export interface SearchableQuality {
+	name: string;
+	type: string;
+}

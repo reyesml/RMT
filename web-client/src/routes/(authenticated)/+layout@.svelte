@@ -4,7 +4,7 @@
 </script>
 
 <Session>
-	<div class="mt-4 pb-10">
+	<div class="mt-4 pb-16">
 		<main class="h-full w-full">
 			<slot />
 		</main>
