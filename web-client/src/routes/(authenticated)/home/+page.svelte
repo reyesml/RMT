@@ -28,15 +28,15 @@
 	<meta name="description" content="RMT Home" />
 </svelte:head>
 
-<section class="mt-40">
+<section class="mt-40 flex flex-col items-center">
 	<h1>
 		Welcome, {$session?.user.username ?? 'friend'} 👋
 	</h1>
 
-	<div class="w-full h-full flex flex-col justify-center items-center">
+	<div class="w-full max-w-xl h-full flex flex-col justify-center items-center">
 		<div class="text-lg">The impossible is unknown.</div>
 		<div
-			class="rounded-full w-1/2 h-16 bg-white mt-12 flex items-center py-3 px-3 border-4 border-transparent focus-within:border-indigo-500 focus-within:outline-none focus-within:ring-sky-500"
+			class="rounded-full w-full h-16 bg-white mt-12 flex items-center py-3 px-3 border-4 border-transparent focus-within:border-indigo-500 focus-within:outline-none focus-within:ring-sky-500"
 		>
 			<MagIcon class="w-8 h-8 text-gray-600" />
 				<label for="search" class="sr-only">Search</label>
@@ -50,7 +50,7 @@
 				/>
 		</div>
 		{#if results}
-		<div class="flex flex-col divide-y w-xl max-w-xl min-w-xl mt-6">
+		<div class="flex flex-col divide-y mt-6 w-full">
 			{#each results as result}
 				<SearchResult item={result} />
 			{/each}
