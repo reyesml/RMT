@@ -20,6 +20,17 @@
 	$: if(query || data.people) {
 		results = fuse.search(query).map((val) => val.item);
 	}
+
+	const greetings = [
+		'Welcome to RMT!',
+		'This is RMT.',
+		'The infinite is possible at RMT.',
+		'You can do anything at RMT, anything at all.',
+		'The only limit is yourself.',
+		'This is RMT, welcome!',
+		'The unobtainable is unknown at RMT.'
+	]
+	let greeting = greetings[Math.floor(Math.random()*greetings.length)]
 </script>
 
 <svelte:head>
@@ -33,7 +44,7 @@
 	</h1>
 
 	<div class="w-full max-w-xl h-full flex flex-col justify-center items-center">
-		<div class="text-lg">The impossible is unknown.</div>
+		<div class="text-lg">{greeting}</div>
 		<div
 			class="rounded-full w-full h-16 bg-white mt-12 flex items-center py-3 px-3 border-4 border-transparent focus-within:border-indigo-500 focus-within:outline-none focus-within:ring-sky-500"
 		>
