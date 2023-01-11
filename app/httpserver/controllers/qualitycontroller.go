@@ -29,8 +29,9 @@ type ListQualityResponse struct {
 }
 
 type Quality struct {
-	UUID      uuid.UUID `json:"uuid"`
+	UUID      uuid.UUID `json:"uuid,omitempty"`
 	Name      string    `json:"name"`
+	Type      string    `json:"type"`
 	CreatedAt time.Time `json:"createdAt"`
 }
 

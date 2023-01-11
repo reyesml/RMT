@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { SearchablePerson } from '$lib/models/person';
+	import type { Person } from '$lib/models/person';
 	import Quality from './quality.svelte';
 
-	export let item: SearchablePerson;
+	export let item: Person;
 
 	let expanded = false;
 </script>

@@ -3,14 +3,14 @@
 	import { getSessionStore } from '$lib/store/session';
 	import type { PageData } from './$types';
 	import Fuse from 'fuse.js';
-	import type { SearchablePerson } from '$lib/models/person';
+	import type { Person } from '$lib/models/person';
 	import SearchResult from './search-result.svelte';
 	let session = getSessionStore();
 
 	export let data: PageData;
 
 	let query: string = '';
-	let results: SearchablePerson[];
+	let results: Person[] = [];
 
 	const options = {
 		keys: ['firstName', 'lastName', 'qualities.name'],
@@ -25,7 +25,7 @@
 
 <svelte:head>
 	<title>Home</title>
-	<meta name="description" content="RMT Welcome" />
+	<meta name="description" content="RMT Home" />
 </svelte:head>
 
 <section class="mt-40">
@@ -49,10 +49,12 @@
 					placeholder="search..."
 				/>
 		</div>
+		{#if results}
 		<div class="flex flex-col divide-y w-xl max-w-xl min-w-xl mt-6">
 			{#each results as result}
 				<SearchResult item={result} />
 			{/each}
 		</div>
+		{/if}
 	</div>
 </section>
