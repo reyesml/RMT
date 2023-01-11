@@ -10,3 +10,13 @@ export function login(username: string, password: string) {
     body: JSON.stringify({ username: username, password: password, tokenInBody: true }),
   });
 }
+
+export function logout(auth: string) {
+  return fetch(`${host}/logout`, {
+    method: "PUT",
+    cache: "no-cache",
+    headers: {
+      Authorization: `Bearer ${auth}`
+    }
+  });
+}

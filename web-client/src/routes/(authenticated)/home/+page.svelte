@@ -15,7 +15,6 @@
 	const options = {
 		keys: ['firstName', 'lastName', 'qualities.name'],
 	};
-	console.log(data.people?.length);
 	const fuse = new Fuse(data.people || [], options);
 	$: if(data.people) fuse.setCollection(data.people);
 	$: if(query || data.people) {

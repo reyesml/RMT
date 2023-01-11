@@ -35,9 +35,10 @@ func main() {
 
 	//Setup interactors
 	createSession := interactors.NewCreateSession(userRepo, sessionRepo, cfg.Session.SigningSecret)
+	deleteSession := interactors.NewDeleteSession(sessionRepo)
 
 	//Setup controllers
-	authController := controllers.NewAuthController(createSession)
+	authController := controllers.NewAuthController(createSession, deleteSession)
 
 	//Setup routes
 	r := chi.NewRouter()
@@ -52,6 +53,8 @@ func main() {
 	//Authenticated routes
 	r.Group(func(r chi.Router) {
 		r.Use(rmtMiddleware.Authenticate(sessionRepo, cfg.Session.SigningSecret))
+
+		r.Put("/logout", authController.Logout)
 
 		r.Route("/journal", func(r chi.Router) {
 			journalController := controllers.NewJournalController(

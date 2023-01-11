@@ -8,8 +8,12 @@
 	let session = createSessionStore();
 
 	let saveSession = false;
-	$: if (saveSession && $session) {
-		window.sessionStorage.setItem('session', JSON.stringify($session));
+	$: if (saveSession) {
+		if ($session) {
+			window.sessionStorage.setItem('session', JSON.stringify($session));
+		} else {
+			window.sessionStorage.removeItem('session');
+		}
 	}
 
 	onMount(async () => {
@@ -21,18 +25,18 @@
 			goto('/login');
 			return;
 		}
-		
+
 		//Flag the session for persistence (set during rerender)
 		saveSession = true;
 
-		if (!ses){
+		if (!ses) {
 			//exit early if session is missing
 			return;
 		}
-		
+
 		//Parse session and check expiration
 		$session = JSON.parse(ses);
-		
+
 		let currTime = new Date().getTime();
 		let duration = new Date($session!.expiration).getTime() - currTime;
 		if (duration <= 0) {

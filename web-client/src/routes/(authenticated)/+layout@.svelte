@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Portal from '$lib/components/portal/portal.svelte';
 	import Session from '$lib/components/session.svelte';
+	import LogoutButton from './logout-button.svelte';
 </script>
 
 <Session>
@@ -27,6 +28,9 @@
 				</div>
 			</div>
 		</footer>
+	</div>
+	<div class="fixed right-4 top-4">
+		<LogoutButton />
 	</div>
 	<Portal id="modal" />
 </Session>

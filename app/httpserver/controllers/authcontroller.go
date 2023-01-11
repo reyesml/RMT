@@ -12,6 +12,7 @@ import (
 
 type AuthController interface {
 	Login(w http.ResponseWriter, r *http.Request)
+	Logout(w http.ResponseWriter, r *http.Request)
 }
 
 type LoginRequest struct {
@@ -33,14 +34,16 @@ type User struct {
 	Admin    bool      `json:"admin"`
 }
 
-func NewAuthController(createSession interactors.CreateSession) authController {
+func NewAuthController(createSession interactors.CreateSession, deleteSession interactors.DeleteSession) authController {
 	return authController{
 		createSession: createSession,
+		deleteSession: deleteSession,
 	}
 }
 
 type authController struct {
 	createSession interactors.CreateSession
+	deleteSession interactors.DeleteSession
 }
 
 func (c authController) Login(w http.ResponseWriter, r *http.Request) {
@@ -88,6 +91,14 @@ func (c authController) Login(w http.ResponseWriter, r *http.Request) {
 			HttpOnly: true,
 		}
 		http.SetCookie(w, &authCookie)
+		return
+	}
+}
+
+func (c authController) Logout(w http.ResponseWriter, r *http.Request) {
+	err := c.deleteSession.Execute(r.Context())
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 }
