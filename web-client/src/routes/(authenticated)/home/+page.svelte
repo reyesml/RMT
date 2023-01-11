@@ -49,12 +49,14 @@
 					placeholder="search..."
 				/>
 		</div>
-		{#if results}
+		{#if results && results.length > 0}
 		<div class="flex flex-col divide-y mt-6 w-full">
 			{#each results as result}
 				<SearchResult item={result} />
 			{/each}
 		</div>
+		{:else if query.length > 0}
+			<div class="mt-6">No results 😕</div>
 		{/if}
 	</div>
 </section>
