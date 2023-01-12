@@ -39,6 +39,9 @@ Open a new terminal window, and run `make run-dev-client`.
 
 ### Project Architecture
 
+![image](https://user-images.githubusercontent.com/4985056/212029324-ac47537f-f22b-41f4-b761-38c6bc52a05a.png)
+
+
 #### Backend
 The backend of RMT is split into two distinct segments: Core, and the HTTP server.
 
