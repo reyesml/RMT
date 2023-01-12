@@ -13,11 +13,11 @@
 	let results: Person[] = [];
 
 	const options = {
-		keys: ['firstName', 'lastName', 'qualities.name'],
+		keys: [{ name: 'firstName', weight: 6 }, { name: 'lastName', weight: 6 }, 'qualities.name']
 	};
 	const fuse = new Fuse(data.people || [], options);
-	$: if(data.people) fuse.setCollection(data.people);
-	$: if(query || data.people) {
+	$: if (data.people) fuse.setCollection(data.people);
+	$: if (query || data.people) {
 		results = fuse.search(query).map((val) => val.item);
 	}
 
@@ -29,8 +29,8 @@
 		'The only limit is yourself.',
 		'This is RMT, welcome!',
 		'The unobtainable is unknown at RMT.'
-	]
-	let greeting = greetings[Math.floor(Math.random()*greetings.length)]
+	];
+	let greeting = greetings[Math.floor(Math.random() * greetings.length)];
 </script>
 
 <svelte:head>
@@ -49,22 +49,22 @@
 			class="rounded-full w-full h-16 bg-white mt-12 flex items-center py-3 px-3 border-4 border-transparent focus-within:border-indigo-500 focus-within:outline-none focus-within:ring-sky-500"
 		>
 			<MagIcon class="w-8 h-8 text-gray-600" />
-				<label for="search" class="sr-only">Search</label>
-				<input
-					bind:value={query}
-					type="text"
-					name="search"
-					id="search"
-					class="w-full h-full bg-inherit text-black text-2xl ml-4 focus:outline-none"
-					placeholder="search..."
-				/>
+			<label for="search" class="sr-only">Search</label>
+			<input
+				bind:value={query}
+				type="text"
+				name="search"
+				id="search"
+				class="w-full h-full bg-inherit text-black text-2xl ml-4 focus:outline-none"
+				placeholder="search..."
+			/>
 		</div>
 		{#if results && results.length > 0}
-		<div class="flex flex-col divide-y mt-6 w-full">
-			{#each results as result}
-				<SearchResult item={result} />
-			{/each}
-		</div>
+			<div class="flex flex-col divide-y mt-6 w-full">
+				{#each results as result}
+					<SearchResult item={result} />
+				{/each}
+			</div>
 		{:else if query.length > 0}
 			<div class="mt-6">No results 😕</div>
 		{/if}
