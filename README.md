@@ -2,7 +2,7 @@
 ![Build & Test](https://github.com/reyesml/RMT/actions/workflows/build_and_test.yml/badge.svg)
 
 
-The Relationship Management Tool (RMT) gives the power of CRM's to individuals.
+RMT gives the power of CRM's to individuals.
 
 ## Key features:
 ### Journal
