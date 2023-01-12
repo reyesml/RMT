@@ -40,7 +40,7 @@
 				Something went wrong.
 			{:else if data.people}
 				<div
-					class="rounded-full w-full h-12 bg-white mt-12 flex items-center py-3 px-3 border-4 border-transparent focus-within:border-indigo-500 focus-within:outline-none focus-within:ring-sky-500"
+					class="rounded-full w-full h-12 bg-white mt-12 flex items-center py-2 px-3 border-4 border-transparent focus-within:border-indigo-500 focus-within:outline-none focus-within:ring-sky-500"
 				>
 					<MagIcon class="w-8 h-8 text-gray-600" />
 					<label for="search" class="sr-only">Search</label>
@@ -49,7 +49,7 @@
 						type="text"
 						name="search"
 						id="search"
-						class="w-full h-full bg-inherit text-black text-2xl ml-4 focus:outline-none"
+						class="w-full h-full bg-inherit text-black text-xl ml-4 focus:outline-none"
 						placeholder="search..."
 					/>
 				</div>
