@@ -19,8 +19,8 @@ ___
 
 ### Recommended pre-requisites
 - npm v8.19.2+
-- go v1.18.2
-- make v3.81
+- go v1.18.2+
+- make v3.81+
 
 ### Running the project
 
@@ -35,3 +35,16 @@ created. It will also add a new "admin" user with a default password of "not_sec
 Launch the backend service by running `make run-dev-server`.
 
 Open a new terminal window, and run `make run-dev-client`.
+
+
+### Project Architecture
+
+#### Backend
+The backend of RMT is split into two distinct segments: Core, and the HTTP server.
+
+`app/core/` is the heart of the service.  It is responsible for database interactions (`database/`, `repos/`), defining  the models used throughout the app (`models/`), and defining the business logic (`interactors/`).  `core/` is protocol agnostic.
+
+`app/httpserver` is an HTTP server that exposes `app/core`'s functionality to web clients. `app/httpserver` defines different HTTP controllers to handle incoming requests (`controllers/`), and those controllers delegate work to `app/core`.
+
+#### Frontend
+The frontend of RMT lives in `web-client/`. The web client is implemented using [SvelteKit](https://kit.svelte.dev/), and the project project loosely follows [SvelteKit project conventions](https://kit.svelte.dev/docs/project-structure).
