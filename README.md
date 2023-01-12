@@ -32,9 +32,9 @@ Replace the signing secret with your own secret. The signing secret is used for 
 Initialize the dev database by running `make init-dev-db`. This will create a new SQLite database with all the tables
 created. It will also add a new "admin" user with a default password of "not_secure".
 
-Launch the backend service by running `make run-dev-server`.
+Launch the API by running `make run-dev-server`.
 
-Open a new terminal window, and run `make run-dev-client`.
+Launch the web server by running `make run-dev-client`.
 
 
 ### Project Architecture
