@@ -9,6 +9,7 @@
 
 	if (form?.success) {
 		session.set(form.session!);
+		if(browser) goto('/home');
 	}
 </script>
 
@@ -26,9 +27,7 @@
 <section>
 	<div class="flex flex-col min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
 		<div class="w-full max-w-md space-y-8">
-			{#if $session && browser}
-				{goto('/home')}
-			{:else if !form || !form.session}
+			{#if !form || !form.session}
 				<div>
 					<h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-white">
 						Sign in to your <span class="logo">RMT</span> account
