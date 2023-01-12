@@ -1,4 +1,5 @@
 import { gateways } from '$lib/gateways';
+import type { Person } from '$lib/models/person';
 import type { PageServerLoad } from './$types';
 
 export const load = (async ({ cookies }) => {
@@ -9,6 +10,6 @@ export const load = (async ({ cookies }) => {
 	}
 	const body = await res.json();
 	return {
-		people: body.people
+		people: body.people as Person[]
 	};
 }) satisfies PageServerLoad;
